@@ -8,10 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.UniqueElements;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Table(name = "linkedin_addresses")
 public class LinkedinAddress {
 
@@ -31,9 +28,8 @@ public class LinkedinAddress {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "linkedin_address_id")
 	private int id;
-	
-	@UniqueElements
+
 	@Column(name = "linkedin_url", unique = true)
 	private String linkedinUrl;
-	
+
 }
