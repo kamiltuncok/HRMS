@@ -1,28 +1,11 @@
 package kodlamaio.HRMS.entities.concretes;
 
-import java.util.Date;
-
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-
-
-import kodlamaio.HRMS.entities.concretes.users.Employer;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -31,55 +14,36 @@ import lombok.NoArgsConstructor;
 @Table(name = "job_advertisements")
 public class JobAdvertisement {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-	@Column(name = "description")
-	private String description;
+    @Column(name = "description", nullable = false)
+    private String description;
 
-	@Column(name = "max_salary")
-	private int maxSalary;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-	@Column(name = "min_salary")
-	private int minSalary;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@Column(name = "start_date")
-	private Date startDate;
+    @Column(name = "status")
+    private boolean status = true;
 
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@Column(name = "end_date")
-	private Date endDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_of_work_id")
+    private TypeOfWork typeOfWork;
 
-	@Column(name = "status")
-	private boolean status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id")
+    private City city;
 
-	@Column(name = "free_position_amount")
-	private int freePositionAmount;
-	
-	@Column(name = "type_of_work")
-	private String typeOfWork;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employer_id")
+    private Employer employer;
 
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "city_id")
-	private City city;
-	
-	
-	
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "employer_id")
-	private Employer employer;
-	
-	
-	
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "job_title_id")
-	private JobTitle jobPosition;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_title_id")
+    private JobTitle jobTitle;
 }

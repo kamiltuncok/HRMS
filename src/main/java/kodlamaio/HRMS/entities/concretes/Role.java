@@ -1,12 +1,11 @@
 package kodlamaio.HRMS.entities.concretes;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,25 +14,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="roles")
+@Table(name = "roles")
 public class Role {
-	public Role(int id) {
-		this.id=id;
-		this.roleName="";
-	}
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
-	private int id;
-	
-	@Column(name="role")
-	private String roleName;
-	
-	public static final Role JOBSEEKER() {
-		return new Role(3);
-	}
-	
-	public static final Role EMPLOYER() {
-		return new Role(2);
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "role_name", nullable = false, unique = true)
+    private String roleName;
+
+    public static final String JOBSEEKER = "JOBSEEKER";
+    public static final String EMPLOYER = "EMPLOYER";
 }

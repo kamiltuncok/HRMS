@@ -1,54 +1,41 @@
 package kodlamaio.HRMS.entities.concretes;
 
-import java.time.LocalDate;
-
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@EqualsAndHashCode
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "schools")
 public class School {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "school_id")
-	private int id;
-	
-	@Column(name = "school_name")
-	private String schoolName;
-	
-	@Column(name = "education_degree") 
-	private String educationDegree;         //lise, üniversite derecesi falan demeye çalıştım... :)
-	
-	@Column(name = "department_name")
-	private String departmentName;
-	
-	@Column(name = "education_start_date")
-	private LocalDate educationStartDate;
-	
-	@Column(name = "is_graduate")
-	private boolean isGraduate;
-	
-	@Column(name = "graduate_date")
-	private LocalDate graduateDate;
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
+    @Column(name = "school_name", nullable = false)
+    private String schoolName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "education_degree", nullable = false)
+    private EducationDegree educationDegree;
+
+    @Column(name = "department_name", nullable = false)
+    private String departmentName;
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "graduate_date")
+    private LocalDate graduateDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resume_id")
+    private Resume resume;
 }

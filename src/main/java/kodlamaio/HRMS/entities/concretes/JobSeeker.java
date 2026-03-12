@@ -1,50 +1,37 @@
 package kodlamaio.HRMS.entities.concretes;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import kodlamaio.HRMS.entities.concretes.users.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
-@EqualsAndHashCode(callSuper = false)
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="job_seekers")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","resume"})
-public class JobSeeker{
-	
-	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	@ManyToOne
-	@JoinColumn(name="user_id")
-	private User user;
-	
-	@Column(name="first_name")
+@Table(name = "job_seekers")
+@PrimaryKeyJoinColumn(name = "user_id")
+public class JobSeeker extends User {
+
+	@Column(name = "first_name", nullable = false)
 	private String firstName;
-	
-	@Column(name="last_name")
+
+	@Column(name = "last_name", nullable = false)
 	private String lastName;
-	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy = "jobSeeker")
-	private Resume resume;
-	
+
+	@Column(name = "identity_number", nullable = false, unique = true)
+    private String identityNumber;
+
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
+
+    @OneToOne(mappedBy = "jobSeeker")
+    private Resume resume;
 }
