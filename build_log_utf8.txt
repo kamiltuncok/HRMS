@@ -1,0 +1,88 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------------< kodlamaio:HRMS >---------------------------
+[INFO] Building HRMS 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:resources (default-resources) @ HRMS ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ HRMS ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 122 source files with javac [debug release 21] to target\classes
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobSeekerMapper.java:[18,23] Unmapped target property: "id".
+[WARNING] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[20,22] Unmapped target property: "id".
+[WARNING] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobAdvertisementMapper.java:[21,22] Unmapped target property: "typeOfWork".
+[INFO] 3 warnings 
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobSeekerMapper.java:[16,15] Unknown property "id" in result type JobSeeker. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobSeekerMapper.java:[16,15] Unknown property "active" in result type JobSeeker. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[17,14] Unknown property "id" in result type Employer. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[17,14] Unknown property "active" in result type Employer. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobAdvertisementMapper.java:[21,22] Unknown property "id" in type Employer for target name "employer.id". Did you mean "employer.email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobAdvertisementMapper.java:[30,30] No property named "city.cityName" exists in source parameter(s). Did you mean "city.name"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/MernisAdapterService.java:[6,29] cannot find symbol
+  symbol:   class Candidate
+  location: package kodlamaio.HRMS.entity
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/abstracts/CandidateCheckService.java:[3,29] cannot find symbol
+  symbol:   class Candidate
+  location: package kodlamaio.HRMS.entity
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/MernisAdapterService.java:[11,45] cannot find symbol
+  symbol:   class Candidate
+  location: class kodlamaio.HRMS.core.adapters.concretes.MernisAdapterService
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/abstracts/CandidateCheckService.java:[6,45] cannot find symbol
+  symbol:   class Candidate
+  location: interface kodlamaio.HRMS.core.adapters.abstracts.CandidateCheckService
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/CandidateCheckManager.java:[6,29] cannot find symbol
+  symbol:   class Candidate
+  location: package kodlamaio.HRMS.entity
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/CandidateCheckManager.java:[11,45] cannot find symbol
+  symbol:   class Candidate
+  location: class kodlamaio.HRMS.core.adapters.concretes.CandidateCheckManager
+[INFO] 12 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.901 s
+[INFO] Finished at: 2026-03-11T17:19:37+03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project HRMS: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobSeekerMapper.java:[16,15] Unknown property "id" in result type JobSeeker. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobSeekerMapper.java:[16,15] Unknown property "active" in result type JobSeeker. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[17,14] Unknown property "id" in result type Employer. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[17,14] Unknown property "active" in result type Employer. Did you mean "email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobAdvertisementMapper.java:[21,22] Unknown property "id" in type Employer for target name "employer.id". Did you mean "employer.email"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobAdvertisementMapper.java:[30,30] No property named "city.cityName" exists in source parameter(s). Did you mean "city.name"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/MernisAdapterService.java:[6,29] cannot find symbol
+[ERROR]   symbol:   class Candidate
+[ERROR]   location: package kodlamaio.HRMS.entity
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/abstracts/CandidateCheckService.java:[3,29] cannot find symbol
+[ERROR]   symbol:   class Candidate
+[ERROR]   location: package kodlamaio.HRMS.entity
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/MernisAdapterService.java:[11,45] cannot find symbol
+[ERROR]   symbol:   class Candidate
+[ERROR]   location: class kodlamaio.HRMS.core.adapters.concretes.MernisAdapterService
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/abstracts/CandidateCheckService.java:[6,45] cannot find symbol
+[ERROR]   symbol:   class Candidate
+[ERROR]   location: interface kodlamaio.HRMS.core.adapters.abstracts.CandidateCheckService
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/CandidateCheckManager.java:[6,29] cannot find symbol
+[ERROR]   symbol:   class Candidate
+[ERROR]   location: package kodlamaio.HRMS.entity
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/adapters/concretes/CandidateCheckManager.java:[11,45] cannot find symbol
+[ERROR]   symbol:   class Candidate
+[ERROR]   location: class kodlamaio.HRMS.core.adapters.concretes.CandidateCheckManager
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

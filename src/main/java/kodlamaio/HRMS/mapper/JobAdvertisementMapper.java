@@ -1,8 +1,7 @@
 package kodlamaio.HRMS.mapper;
 
-import kodlamaio.HRMS.dto.JobAdvertisementRequest;
-import kodlamaio.HRMS.dto.JobAdvertisementResponse;
-import kodlamaio.HRMS.entities.concretes.JobAdvertisement;
+import kodlamaio.HRMS.dto.*;
+import kodlamaio.HRMS.entities.concretes.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import java.util.List;
@@ -21,10 +20,6 @@ public interface JobAdvertisementMapper {
     @Mapping(target = "endDate", source = "applicationDeadline")
     JobAdvertisement toEntity(JobAdvertisementRequest request);
 
-    @Mapping(target = "jobTitle", source = "jobTitle.title")
-    @Mapping(target = "typeOfWorkName", source = "typeOfWork.name")
-    @Mapping(target = "cityName", source = "city.name")
-    @Mapping(target = "companyName", source = "employer.companyName")
     @Mapping(target = "createdDate", source = "startDate")
     @Mapping(target = "applicationDeadline", source = "endDate")
     @Mapping(target = "isActive", source = "status")
@@ -32,4 +27,19 @@ public interface JobAdvertisementMapper {
     JobAdvertisementResponse toResponse(JobAdvertisement entity);
 
     List<JobAdvertisementResponse> toResponseList(List<JobAdvertisement> entities);
+
+    // Mapper methods for nested objects
+    @Mapping(target = "name", source = "name")
+    CityResponse toCityResponse(City city);
+
+    @Mapping(target = "title", source = "title")
+    JobTitleResponse toJobTitleResponse(JobTitle title);
+
+    @Mapping(target = "name", source = "name")
+    TypeOfWorkResponse toTypeOfWorkResponse(TypeOfWork type);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "companyName", source = "companyName")
+    @Mapping(target = "email", source = "email")
+    EmployerResponse toEmployerResponse(Employer employer);
 }

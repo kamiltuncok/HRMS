@@ -1,0 +1,23 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------------< kodlamaio:HRMS >---------------------------
+[INFO] Building HRMS 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.3.2:clean (default-clean) @ HRMS ---
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:resources (default-resources) @ HRMS ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ HRMS ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 106 source files with javac [debug release 21] to target\classes
+[WARNING] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[17,14] Unmapped target property: "authorities".
+[WARNING] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobSeekerMapper.java:[16,15] Unmapped target property: "authorities".
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11.050 s
+[INFO] Finished at: 2026-03-11T18:32:29+03:00
+[INFO] ------------------------------------------------------------------------

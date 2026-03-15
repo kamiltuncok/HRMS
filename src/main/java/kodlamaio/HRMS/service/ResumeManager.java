@@ -55,9 +55,8 @@ public class ResumeManager implements ResumeService {
 				.orElseGet(() -> new ErrorDataResult<>("Resume not found."));
 	}
 
-	@Override
 	public DataResult<Resume> getResumeByJobSeeker_id(Long jsId) {
-		Resume resume = this.resumeDao.findByJobSeeker_UserId(jsId);
+		Resume resume = this.resumeDao.findByJobSeeker_Id(jsId);
 		return new SuccessDataResult<>(resume, "Resume retrieved successfully.");
 	}
 
@@ -70,7 +69,7 @@ public class ResumeManager implements ResumeService {
 
 	@Override
 	public Result updateResumePhoto(Long id, Photo photo) {
-		Resume current = this.resumeDao.findByJobSeeker_UserId(id);
+		Resume current = this.resumeDao.findByJobSeeker_Id(id);
 		if (current == null) {
 			return new ErrorResult("Resume not found.");
 		}
@@ -81,7 +80,7 @@ public class ResumeManager implements ResumeService {
 
 	@Override
 	public Result deleteResumePhoto(Long id) {
-		Resume current = this.resumeDao.findByJobSeeker_UserId(id);
+		Resume current = this.resumeDao.findByJobSeeker_Id(id);
 		if (current == null) {
 			return new ErrorResult("Resume not found.");
 		}

@@ -1,8 +1,5 @@
 package kodlamaio.HRMS.service;
 
-import java.util.List;
-import org.springframework.stereotype.Service;
-
 import kodlamaio.HRMS.core.utilities.results.DataResult;
 import kodlamaio.HRMS.core.utilities.results.ErrorDataResult;
 import kodlamaio.HRMS.core.utilities.results.ErrorResult;
@@ -12,9 +9,15 @@ import kodlamaio.HRMS.core.utilities.results.SuccessResult;
 import kodlamaio.HRMS.dto.EmployerRequest;
 import kodlamaio.HRMS.dto.EmployerResponse;
 import kodlamaio.HRMS.entities.concretes.Employer;
+import kodlamaio.HRMS.entities.concretes.Role;
 import kodlamaio.HRMS.mapper.EmployerMapper;
 import kodlamaio.HRMS.repository.EmployerDao;
+import kodlamaio.HRMS.repository.RoleDao;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ public class EmployerManager implements EmployerService {
 
 	private final EmployerDao employerDao;
 	private final EmployerMapper mapper;
+	private final PasswordEncoder passwordEncoder;
+	private final RoleDao roleDao;
 
 	@Override
 	public DataResult<List<EmployerResponse>> getAll() {
@@ -32,6 +37,12 @@ public class EmployerManager implements EmployerService {
 	@Override
 	public DataResult<EmployerResponse> add(EmployerRequest request) {
 		Employer entity = mapper.toEntity(request);
+		entity.setPassword(passwordEncoder.encode(request.password()));
+		
+		Role role = roleDao.findByRoleName(Role.EMPLOYER)
+				.orElseThrow(() -> new RuntimeException("Role not found: EMPLOYER"));
+		entity.setRole(role);
+		
 		var savedEntity = this.employerDao.save(entity);
 		return new SuccessDataResult<>(mapper.toResponse(savedEntity), "Employer has been added successfully.");
 	}
@@ -42,6 +53,11 @@ public class EmployerManager implements EmployerService {
 				.<DataResult<EmployerResponse>>map(existing -> {
 					Employer updatedEntity = mapper.toEntity(request);
 					updatedEntity.setId(id);
+					updatedEntity.setPassword(passwordEncoder.encode(request.password()));
+					Role role = roleDao.findByRoleName(Role.JOBSEEKER)
+							.orElseThrow(() -> new RuntimeException("Role not found: JOBSEEKER"));
+					updatedEntity.setRole(role);
+					
 					var savedEntity = this.employerDao.save(updatedEntity);
 					return new SuccessDataResult<>(mapper.toResponse(savedEntity),
 							"Employer has been updated successfully.");

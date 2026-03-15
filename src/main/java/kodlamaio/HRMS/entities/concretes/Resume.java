@@ -21,13 +21,13 @@ public class Resume {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "resume_id")
     private Long id;
 
     @Column(name = "summary")
     private String summary = "";
 
-    @Column(name = "address")
+    @Column(name = "adress")
     private String address = "";
 
     @Column(name = "birth_date")
@@ -36,10 +36,10 @@ public class Resume {
     @Column(name = "phone")
     private String phone = "";
 
-    @Column(name = "github_url")
+    @Column(name = "github")
     private String githubUrl = "";
-
-    @Column(name = "linkedin_url")
+    
+    @Column(name = "linkedin")
     private String linkedinUrl = "";
 
     @Column(name = "portfolio_url")
@@ -50,7 +50,7 @@ public class Resume {
     private Photo photo;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_seeker_id", nullable = false)
+    @JoinColumn(name = "jobseeker_id", nullable = false)
     private JobSeeker jobSeeker;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

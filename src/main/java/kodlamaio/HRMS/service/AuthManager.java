@@ -43,7 +43,7 @@ public class AuthManager implements AuthService {
 		User user = (User) auth.getPrincipal();
 
 		String token = jwtService.generateToken(user);
-		var response = new AuthResponse(token, user.getEmail(), user.getRole().getRoleName());
+		var response = new AuthResponse(token, user.getId(), user.getEmail(), "ROLE_" + user.getRole().getRoleName().toUpperCase());
 
 		return new SuccessDataResult<>(response, "Login successful");
 	}

@@ -4,11 +4,11 @@ import java.time.LocalDate;
 
 public record JobAdvertisementResponse(
                 Long id,
-                String companyName,
-                String jobTitle,
-                String typeOfWorkName,
+                EmployerResponse employer,
+                JobTitleResponse jobTitle,
+                TypeOfWorkResponse typeOfWork,
                 String description,
-                String cityName,
+                CityResponse city,
                 int openPositions,
                 LocalDate applicationDeadline,
                 LocalDate createdDate,

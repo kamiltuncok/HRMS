@@ -5,5 +5,5 @@ import kodlamaio.HRMS.entities.concretes.Resume;
 
 public interface ResumeDao extends JpaRepository<Resume, Long> {
 
-	Resume findByJobSeeker_UserId(Long jsId);
+	Resume findByJobSeeker_Id(Long jsId);
 }

@@ -1,0 +1,45 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------------< kodlamaio:HRMS >---------------------------
+[INFO] Building HRMS 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.3.2:clean (default-clean) @ HRMS ---
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:resources (default-resources) @ HRMS ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ HRMS ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 106 source files with javac [debug release 21] to target\classes
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobSeekerMapper.java:[15,15] Unmapped target properties: "role, authorities".
+[WARNING] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/JobAdvertisementMapper.java:[31,30] Unmapped target property: "openPositions".
+[INFO] 2 warnings 
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[16,14] Unknown property "webAdress" in result type Employer. Did you mean "webAddress"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[18,46] No property named "webAdress" exists in source parameter(s). Did you mean "webAddress"?
+[INFO] 2 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.695 s
+[INFO] Finished at: 2026-03-11T18:30:21+03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project HRMS: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[16,14] Unknown property "webAdress" in result type Employer. Did you mean "webAddress"?
+[ERROR] /C:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/mapper/EmployerMapper.java:[18,46] No property named "webAdress" exists in source parameter(s). Did you mean "webAddress"?
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

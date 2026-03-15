@@ -18,7 +18,7 @@ public class City {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "city_name", nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
