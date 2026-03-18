@@ -2,7 +2,7 @@ package kodlamaio.HRMS.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import kodlamaio.HRMS.entities.concretes.JobExperience;
+import kodlamaio.HRMS.dto.JobExperienceRequest;
 import kodlamaio.HRMS.service.JobExperienceService;
 import lombok.RequiredArgsConstructor;
 
@@ -20,8 +20,13 @@ public class JobExperiencesController extends BaseController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody JobExperience jobExperience) {
-        return Ok(() -> this.jobExperienceService.add(jobExperience));
+    public ResponseEntity<?> add(@RequestBody JobExperienceRequest jobExperienceRequest) {
+        return Ok(() -> this.jobExperienceService.add(jobExperienceRequest));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam Long id) {
+        return Ok(() -> this.jobExperienceService.delete(id));
     }
 
     @GetMapping("/getallbyresumeidasc")

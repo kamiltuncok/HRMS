@@ -11,7 +11,7 @@ public interface JobSeekerService {
 
 	DataResult<JobSeekerResponse> add(JobSeekerRequest request);
 
-	DataResult<JobSeekerResponse> update(Long id, JobSeekerRequest request);
+	DataResult<JobSeekerResponse> update(Long id, kodlamaio.HRMS.dto.JobSeekerUpdateRequest request);
 
 	Result delete(Long id);
 

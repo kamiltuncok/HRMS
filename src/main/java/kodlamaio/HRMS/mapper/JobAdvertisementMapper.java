@@ -23,7 +23,6 @@ public interface JobAdvertisementMapper {
     @Mapping(target = "createdDate", source = "startDate")
     @Mapping(target = "applicationDeadline", source = "endDate")
     @Mapping(target = "isActive", source = "status")
-    @Mapping(target = "openPositions", ignore = true)
     JobAdvertisementResponse toResponse(JobAdvertisement entity);
 
     List<JobAdvertisementResponse> toResponseList(List<JobAdvertisement> entities);

@@ -12,6 +12,8 @@ public interface SchoolService {
 
 	Result add(School school);
 
+	Result delete(Long id);
+
 	DataResult<List<School>> findByResume_IdOrderByGraduateDateAsc(Long resumeId);
 
 	DataResult<List<School>> findByResume_IdOrderByGraduateDateDesc(Long resumeId, Direction direction);

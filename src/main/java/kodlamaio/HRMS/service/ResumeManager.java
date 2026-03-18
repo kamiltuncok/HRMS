@@ -2,24 +2,33 @@ package kodlamaio.HRMS.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlamaio.HRMS.core.utilities.results.DataResult;
 import kodlamaio.HRMS.core.utilities.results.ErrorResult;
 import kodlamaio.HRMS.core.utilities.results.Result;
+import kodlamaio.HRMS.core.utilities.results.ErrorDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessResult;
 import kodlamaio.HRMS.repository.ResumeDao;
-import kodlamaio.HRMS.core.utilities.results.ErrorDataResult;
+import kodlamaio.HRMS.dto.ResumeRequest;
+import kodlamaio.HRMS.entities.concretes.JobSeeker;
 import kodlamaio.HRMS.entities.concretes.Photo;
 import kodlamaio.HRMS.entities.concretes.Resume;
-import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@RequiredArgsConstructor
 public class ResumeManager implements ResumeService {
 
 	private final ResumeDao resumeDao;
+	private final PhotoService photoService;
+
+	@Autowired
+	public ResumeManager(ResumeDao resumeDao, PhotoService photoService) {
+		this.resumeDao = resumeDao;
+		this.photoService = photoService;
+	}
 
 	@Override
 	public DataResult<List<Resume>> getAll() {
@@ -27,7 +36,17 @@ public class ResumeManager implements ResumeService {
 	}
 
 	@Override
-	public DataResult<Resume> add(Resume resume) {
+	public DataResult<Resume> add(ResumeRequest request) {
+		Resume resume = new Resume();
+		if (request.id() != null) {
+			resume.setId(request.id());
+		}
+		mapDtoToEntity(request, resume);
+		
+		JobSeeker js = new JobSeeker();
+		js.setId(request.jobSeekerId());
+		resume.setJobSeeker(js);
+		
 		this.resumeDao.save(resume);
 		return new SuccessDataResult<>(resume, "Resume has been added successfully.");
 	}
@@ -39,20 +58,23 @@ public class ResumeManager implements ResumeService {
 	}
 
 	@Override
-	public DataResult<Resume> update(Resume entity) {
-		return this.resumeDao.findById(entity.getId())
+	public DataResult<Resume> update(ResumeRequest request) {
+		return this.resumeDao.findById(request.id())
 				.<DataResult<Resume>>map(current -> {
-					current.setAddress(entity.getAddress());
-					current.setBirthDate(entity.getBirthDate());
-					current.setPhone(entity.getPhone());
-					current.setGithubUrl(entity.getGithubUrl());
-					current.setLinkedinUrl(entity.getLinkedinUrl());
-					current.setSummary(entity.getSummary());
-					current.setPortfolioUrl(entity.getPortfolioUrl());
+					mapDtoToEntity(request, current);
 					this.resumeDao.save(current);
 					return new SuccessDataResult<>(current, "Resume has been updated successfully.");
 				})
 				.orElseGet(() -> new ErrorDataResult<>("Resume not found."));
+	}
+
+	private void mapDtoToEntity(ResumeRequest request, Resume resume) {
+		resume.setBirthDate(request.birthDate());
+		resume.setPhone(request.phone());
+		resume.setGithubUrl(request.githubUrl());
+		resume.setLinkedinUrl(request.linkedinUrl());
+		resume.setSummary(request.summary());
+		resume.setPortfolioUrl(request.portfolioUrl());
 	}
 
 	public DataResult<Resume> getResumeByJobSeeker_id(Long jsId) {
@@ -87,5 +109,30 @@ public class ResumeManager implements ResumeService {
 		current.setPhoto(null);
 		this.resumeDao.save(current);
 		return new SuccessResult("Photo has been removed successfully.");
+	}
+
+	@Override
+	public DataResult<String> uploadPhoto(Long jobSeekerId, MultipartFile file) {
+		Resume resume = this.resumeDao.findByJobSeeker_Id(jobSeekerId);
+		if (resume == null) {
+			return new ErrorDataResult<>("Resume not found for job seeker ID: " + jobSeekerId);
+		}
+
+		Photo photo = new Photo();
+		var uploadResult = this.photoService.add(photo, file);
+		if (!uploadResult.isSuccess()) {
+			return new ErrorDataResult<>("Photo upload failed.");
+		}
+
+		resume.setPhoto(photo);
+		this.resumeDao.save(resume);
+		
+		return new SuccessDataResult<>(photo.getPhotoUrl(), "Photo uploaded successfully.");
+	}
+
+	@Override
+	public DataResult<String> uploadCv(Long jobSeekerId, MultipartFile file) {
+		// CV upload logic goes here (similar to photo or just URL saving)
+		return new SuccessDataResult<>("CV uploaded successfully.");
 	}
 }

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "skills")
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Skill {
 
     @Id
@@ -17,9 +18,13 @@ public class Skill {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonProperty("skillName")
+    @Column(name = "name")
     private String name;
 
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id")
     private Resume resume;

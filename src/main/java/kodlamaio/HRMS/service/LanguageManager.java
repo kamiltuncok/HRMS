@@ -30,4 +30,10 @@ public class LanguageManager implements LanguageService {
 		this.languageDao.save(language);
 		return new SuccessResult("Language has been added successfully.");
 	}
+
+	@Override
+	public Result delete(Long id) {
+		this.languageDao.deleteById(id);
+		return new SuccessResult("Language has been deleted successfully.");
+	}
 }

@@ -7,5 +7,6 @@ public record JobSeekerResponse(
         String firstName,
         String lastName,
         String email,
+        String phoneNumber,
         LocalDate birthDate) {
 }

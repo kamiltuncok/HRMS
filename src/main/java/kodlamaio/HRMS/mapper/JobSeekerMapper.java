@@ -1,6 +1,7 @@
 package kodlamaio.HRMS.mapper;
 
 import kodlamaio.HRMS.dto.JobSeekerRequest;
+import kodlamaio.HRMS.dto.JobSeekerUpdateRequest;
 import kodlamaio.HRMS.dto.JobSeekerResponse;
 import kodlamaio.HRMS.entities.concretes.JobSeeker;
 import org.mapstruct.Mapper;
@@ -14,6 +15,12 @@ public interface JobSeekerMapper {
     @Mapping(target = "resume", ignore = true)
     @Mapping(target = "role", ignore = true)
     JobSeeker toEntity(JobSeekerRequest request);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "resume", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    JobSeeker toEntity(JobSeekerUpdateRequest request);
 
     JobSeekerResponse toResponse(JobSeeker entity);
 

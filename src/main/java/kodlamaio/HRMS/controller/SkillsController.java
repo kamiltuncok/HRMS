@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kodlamaio.HRMS.service.*;
@@ -28,5 +29,10 @@ public class SkillsController extends BaseController {
 	@PostMapping(value = "/add")
 	public ResponseEntity<?> add(@RequestBody Skill skill) {
 		return Ok(() -> this.skillService.add(skill));
+	}
+
+	@PostMapping(value = "/delete")
+	public ResponseEntity<?> delete(@RequestParam Long id) {
+		return Ok(() -> this.skillService.delete(id));
 	}
 }

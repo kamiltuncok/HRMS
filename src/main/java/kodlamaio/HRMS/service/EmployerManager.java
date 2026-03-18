@@ -54,8 +54,8 @@ public class EmployerManager implements EmployerService {
 					Employer updatedEntity = mapper.toEntity(request);
 					updatedEntity.setId(id);
 					updatedEntity.setPassword(passwordEncoder.encode(request.password()));
-					Role role = roleDao.findByRoleName(Role.JOBSEEKER)
-							.orElseThrow(() -> new RuntimeException("Role not found: JOBSEEKER"));
+					Role role = roleDao.findByRoleName(Role.EMPLOYER)
+							.orElseThrow(() -> new RuntimeException("Role not found: " + Role.EMPLOYER));
 					updatedEntity.setRole(role);
 					
 					var savedEntity = this.employerDao.save(updatedEntity);

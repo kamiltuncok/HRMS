@@ -75,6 +75,7 @@ public class DataLoader implements CommandLineRunner {
             ad.setCity(cities.get(i % cities.size()));
             ad.setJobTitle(titles.get(i % titles.size()));
             ad.setTypeOfWork(types.get(i % types.size()));
+            ad.setOpenPositions(2);
             jobAdvertisementDao.save(ad);
 
             if (!seekers.isEmpty()) {

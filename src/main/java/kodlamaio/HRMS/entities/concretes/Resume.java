@@ -21,48 +21,62 @@ public class Resume {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "resume_id")
+    @Column(name = "id")
     private Long id;
-
-    @Column(name = "summary")
-    private String summary = "";
-
-    @Column(name = "adress")
-    private String address = "";
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "phone")
-    private String phone = "";
+    @Column(name = "address")
+    private String address;
 
-    @Column(name = "github")
-    private String githubUrl = "";
-    
-    @Column(name = "linkedin")
-    private String linkedinUrl = "";
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "linkedin_url")
+    private String linkedinUrl;
+
+    @Column(name = "github_url")
+    private String githubUrl;
 
     @Column(name = "portfolio_url")
-    private String portfolioUrl = "";
+    private String portfolioUrl;
+
+    @Column(name = "summary")
+    private String summary;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "photo_id")
     private Photo photo;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @OneToOne
     @JoinColumn(name = "jobseeker_id", nullable = false)
     private JobSeeker jobSeeker;
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @com.fasterxml.jackson.annotation.JsonManagedReference
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<JobExperience> jobExperiences = new HashSet<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @com.fasterxml.jackson.annotation.JsonManagedReference
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<School> schools = new HashSet<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @com.fasterxml.jackson.annotation.JsonManagedReference
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Skill> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @com.fasterxml.jackson.annotation.JsonManagedReference
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Language> languages = new HashSet<>();
 
     // Compatibility methods for ResumeManager

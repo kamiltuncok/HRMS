@@ -26,7 +26,7 @@ public class JobSeekerController extends BaseController {
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<?> update(@RequestParam Long id, @Valid @RequestBody JobSeekerRequest jobSeekerRequest) {
+	public ResponseEntity<?> update(@RequestParam Long id, @Valid @RequestBody kodlamaio.HRMS.dto.JobSeekerUpdateRequest jobSeekerRequest) {
 		return Ok(() -> this.jobSeekerService.update(id, jobSeekerRequest));
 	}
 

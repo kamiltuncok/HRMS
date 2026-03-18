@@ -30,4 +30,10 @@ public class SkillManager implements SkillService {
 		this.skillDao.save(skill);
 		return new SuccessResult("Skill has been added successfully.");
 	}
+
+	@Override
+	public Result delete(Long id) {
+		this.skillDao.deleteById(id);
+		return new SuccessResult("Skill has been deleted successfully.");
+	}
 }

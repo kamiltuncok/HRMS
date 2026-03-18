@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kodlamaio.HRMS.service.*;
@@ -28,5 +29,10 @@ public class LanguagesController extends BaseController {
 	@PostMapping(value = "/add")
 	public ResponseEntity<?> add(@RequestBody Language language) {
 		return Ok(() -> this.languageService.add(language));
+	}
+
+	@PostMapping(value = "/delete")
+	public ResponseEntity<?> delete(@RequestParam Long id) {
+		return Ok(() -> this.languageService.delete(id));
 	}
 }

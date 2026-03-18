@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Table(name = "roles")
 public class Role {
     @Id
@@ -24,6 +25,6 @@ public class Role {
     @Column(name = "role_name", nullable = false, unique = true)
     private String roleName;
 
-    public static final String JOBSEEKER = "JOBSEEKER";
-    public static final String EMPLOYER = "EMPLOYER";
+    public static final String JOBSEEKER = "ROLE_JOBSEEKER";
+    public static final String EMPLOYER = "ROLE_EMPLOYER";
 }

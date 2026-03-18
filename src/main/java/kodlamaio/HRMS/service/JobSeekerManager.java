@@ -48,15 +48,13 @@ public class JobSeekerManager implements JobSeekerService {
 	}
 
 	@Override
-	public DataResult<JobSeekerResponse> update(Long id, JobSeekerRequest request) {
+	public DataResult<JobSeekerResponse> update(Long id, kodlamaio.HRMS.dto.JobSeekerUpdateRequest request) {
 		return this.jobSeekerDao.findById(id)
 				.<DataResult<JobSeekerResponse>>map(existing -> {
 					JobSeeker updatedEntity = mapper.toEntity(request);
 					updatedEntity.setId(id);
-					updatedEntity.setPassword(passwordEncoder.encode(request.password()));
-					Role role = roleDao.findByRoleName("ROLE_JOBSEEKER")
-							.orElseThrow(() -> new RuntimeException("Role not found: ROLE_JOBSEEKER"));
-					updatedEntity.setRole(role);
+					updatedEntity.setPassword(existing.getPassword()); // Preserve password
+					updatedEntity.setRole(existing.getRole()); // Preserve role
 					var savedEntity = this.jobSeekerDao.save(updatedEntity);
 					return new SuccessDataResult<>(mapper.toResponse(savedEntity), "Job seeker updated successfully.");
 				})
@@ -74,9 +72,6 @@ public class JobSeekerManager implements JobSeekerService {
 
 	@Override
 	public Result validate(JobSeekerRequest request) throws Exception {
-		if (request.identityNumber().length() != 11) {
-			return new ErrorResult("Identity number must be 11 characters.");
-		}
 		return new SuccessResult();
 	}
 

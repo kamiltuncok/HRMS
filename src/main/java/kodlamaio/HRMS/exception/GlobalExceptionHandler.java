@@ -42,6 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDataResult<Object> handleAllExceptions(Exception exception) {
-        return new ErrorDataResult<>(exception.getMessage(), "Standard Error");
+        exception.printStackTrace();
+        return new ErrorDataResult<>(exception.getMessage(), "Standard Error: " + exception.getClass().getSimpleName());
     }
 }

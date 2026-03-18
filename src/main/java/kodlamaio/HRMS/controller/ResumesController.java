@@ -2,9 +2,10 @@ package kodlamaio.HRMS.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import kodlamaio.HRMS.entities.concretes.Resume;
+import kodlamaio.HRMS.dto.ResumeRequest;
 import kodlamaio.HRMS.service.ResumeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/resumes")
@@ -20,13 +21,23 @@ public class ResumesController extends BaseController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody Resume resume) {
-        return Ok(() -> this.resumeService.add(resume));
+    public ResponseEntity<?> add(@RequestBody ResumeRequest resumeRequest) {
+        return Ok(() -> this.resumeService.add(resumeRequest));
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestBody Resume resume) {
-        return Ok(() -> this.resumeService.update(resume));
+    public ResponseEntity<?> update(@RequestBody ResumeRequest resumeRequest) {
+        return Ok(() -> this.resumeService.update(resumeRequest));
+    }
+
+    @PostMapping("/uploadphoto")
+    public ResponseEntity<?> uploadPhoto(@RequestParam Long jobSeekerId, @RequestParam MultipartFile file) {
+        return Ok(() -> this.resumeService.uploadPhoto(jobSeekerId, file));
+    }
+
+    @PostMapping("/uploadcv")
+    public ResponseEntity<?> uploadCv(@RequestParam Long jobSeekerId, @RequestParam MultipartFile file) {
+        return Ok(() -> this.resumeService.uploadCv(jobSeekerId, file));
     }
 
     @GetMapping("/getbyjobseekerid")

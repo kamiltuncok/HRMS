@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.time.LocalDate;
 
 @Data
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "job_applications")
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class JobApplication {
 
     @Id
@@ -21,10 +23,15 @@ public class JobApplication {
     @Column(name = "application_date", nullable = false)
     private LocalDate applicationDate;
 
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_seeker_id")
     private JobSeeker jobSeeker;
 
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_advertisement_id")
     private JobAdvertisement jobAdvertisement;

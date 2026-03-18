@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public abstract class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,7 @@ public abstract class User implements UserDetails {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -33,8 +35,12 @@ public abstract class User implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null || role.getRoleName() == null) {
+            return List.of();
+        }
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().toUpperCase()));
     }
 

@@ -32,6 +32,11 @@ public class SchoolsController extends BaseController {
 		return Ok(() -> this.schoolService.add(school));
 	}
 
+	@PostMapping(value = "/delete")
+	public ResponseEntity<?> delete(@RequestParam Long id) {
+		return Ok(() -> this.schoolService.delete(id));
+	}
+
 	@GetMapping(value = "/getallbyresumeidgraduatedate")
 	public ResponseEntity<?> findByResume_IdOrderByGraduateDateAsc(@RequestParam Long resumeId) {
 		return Ok(() -> this.schoolService.findByResume_IdOrderByGraduateDateAsc(resumeId));

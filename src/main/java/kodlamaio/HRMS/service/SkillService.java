@@ -11,4 +11,6 @@ public interface SkillService {
 	DataResult<List<Skill>> getAll();
 
 	Result add(Skill skill);
+
+	Result delete(Long id);
 }

@@ -13,7 +13,7 @@ public record JobAdvertisementRequest(
 
                 @NotNull(message = "Job Title ID is mandatory") Long jobTitleId,
 
-                @NotNull(message = "Type of Work ID is mandatory") Long typeOfWorkId,
+                Long typeOfWorkId,
 
                 @NotBlank(message = "Description is mandatory") String description,
 

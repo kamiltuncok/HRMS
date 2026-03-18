@@ -31,6 +31,12 @@ public class SchoolManager implements SchoolService {
 	}
 
 	@Override
+	public Result delete(Long id) {
+		this.schoolDao.deleteById(id);
+		return new SuccessResult("School has been deleted successfully.");
+	}
+
+	@Override
 	public DataResult<List<School>> findByResume_IdOrderByGraduateDateAsc(Long resumeId) {
 		return new SuccessDataResult<>(this.schoolDao.findByResume_IdOrderByGraduateDateAsc(resumeId),
 				"Schools ordered by graduation date (ASC) listed successfully.");

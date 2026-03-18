@@ -19,6 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "employers")
 @PrimaryKeyJoinColumn(name = "user_id")
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Employer extends User {
 
     @Column(name = "company_name", nullable = false)
@@ -30,6 +31,9 @@ public class Employer extends User {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "employer")
     private Set<JobAdvertisement> jobAdvertisements;
 }
