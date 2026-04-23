@@ -18,6 +18,8 @@ public interface JobAdvertisementMapper {
     @Mapping(target = "typeOfWork.id", source = "typeOfWorkId")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "endDate", source = "applicationDeadline")
+    @Mapping(target = "openPositions", constant = "1")
+    @Mapping(target = "jobApplications", ignore = true)
     JobAdvertisement toEntity(JobAdvertisementRequest request);
 
     @Mapping(target = "createdDate", source = "startDate")

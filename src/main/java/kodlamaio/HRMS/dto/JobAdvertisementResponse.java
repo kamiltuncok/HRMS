@@ -9,7 +9,6 @@ public record JobAdvertisementResponse(
                 TypeOfWorkResponse typeOfWork,
                 String description,
                 CityResponse city,
-                int openPositions,
                 LocalDate applicationDeadline,
                 LocalDate createdDate,
                 boolean isActive) {

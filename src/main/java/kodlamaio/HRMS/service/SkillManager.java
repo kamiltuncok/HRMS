@@ -11,6 +11,8 @@ import kodlamaio.HRMS.core.utilities.results.SuccessDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessResult;
 import kodlamaio.HRMS.repository.SkillDao;
 import kodlamaio.HRMS.entities.concretes.Skill;
+import kodlamaio.HRMS.entities.concretes.Resume;
+import kodlamaio.HRMS.dto.SkillRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +28,14 @@ public class SkillManager implements SkillService {
 	}
 
 	@Override
-	public Result add(Skill skill) {
+	public Result add(SkillRequest skillRequest) {
+		Skill skill = new Skill();
+		skill.setName(skillRequest.skillName());
+		
+		Resume resume = new Resume();
+		resume.setId(skillRequest.resumeId());
+		skill.setResume(resume);
+		
 		this.skillDao.save(skill);
 		return new SuccessResult("Skill has been added successfully.");
 	}

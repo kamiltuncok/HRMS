@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kodlamaio.HRMS.service.*;
 import kodlamaio.HRMS.entities.concretes.Language;
+import kodlamaio.HRMS.dto.LanguageRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,8 +28,8 @@ public class LanguagesController extends BaseController {
 	}
 
 	@PostMapping(value = "/add")
-	public ResponseEntity<?> add(@RequestBody Language language) {
-		return Ok(() -> this.languageService.add(language));
+	public ResponseEntity<?> add(@RequestBody LanguageRequest languageRequest) {
+		return Ok(() -> this.languageService.add(languageRequest));
 	}
 
 	@PostMapping(value = "/delete")

@@ -1,7 +1,6 @@
 package kodlamaio.HRMS.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -16,8 +15,6 @@ public record JobAdvertisementRequest(
                 Long typeOfWorkId,
 
                 @NotBlank(message = "Description is mandatory") String description,
-
-                @Min(value = 1, message = "Open positions must be at least 1") int openPositions,
 
                 @FutureOrPresent(message = "Application deadline must be in the future or present") LocalDate applicationDeadline) {
 }

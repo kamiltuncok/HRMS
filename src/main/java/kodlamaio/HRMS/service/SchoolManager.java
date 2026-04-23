@@ -11,6 +11,8 @@ import kodlamaio.HRMS.core.utilities.results.SuccessDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessResult;
 import kodlamaio.HRMS.repository.SchoolDao;
 import kodlamaio.HRMS.entities.concretes.School;
+import kodlamaio.HRMS.entities.concretes.Resume;
+import kodlamaio.HRMS.dto.SchoolRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,11 +23,22 @@ public class SchoolManager implements SchoolService {
 
 	@Override
 	public DataResult<List<School>> getAll() {
-		return new SuccessDataResult<>(this.schoolDao.findAll(), "Schools have been listed successfully.");
+		return new SuccessDataResult<>(this.schoolDao.findAll(), "Schools listed successfully.");
 	}
 
 	@Override
-	public Result add(School school) {
+	public Result add(SchoolRequest schoolRequest) {
+		School school = new School();
+		school.setSchoolName(schoolRequest.schoolName());
+		school.setDepartmentName(schoolRequest.departmentName());
+		school.setEducationDegree(schoolRequest.educationDegree());
+		school.setStartDate(schoolRequest.startDate());
+		school.setGraduateDate(schoolRequest.graduateDate());
+		
+		Resume resume = new Resume();
+		resume.setId(schoolRequest.resumeId());
+		school.setResume(resume);
+		
 		this.schoolDao.save(school);
 		return new SuccessResult("School has been added successfully.");
 	}

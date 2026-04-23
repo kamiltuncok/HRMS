@@ -19,7 +19,7 @@ public class Skill {
     private Long id;
 
     @com.fasterxml.jackson.annotation.JsonProperty("skillName")
-    @Column(name = "name")
+    @Column(name = "skill_name")
     private String name;
 
     @lombok.ToString.Exclude

@@ -11,6 +11,8 @@ import kodlamaio.HRMS.core.utilities.results.SuccessDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessResult;
 import kodlamaio.HRMS.repository.LanguageDao;
 import kodlamaio.HRMS.entities.concretes.Language;
+import kodlamaio.HRMS.entities.concretes.Resume;
+import kodlamaio.HRMS.dto.LanguageRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +28,15 @@ public class LanguageManager implements LanguageService {
 	}
 
 	@Override
-	public Result add(Language language) {
+	public Result add(LanguageRequest languageRequest) {
+		Language language = new Language();
+		language.setName(languageRequest.languageName());
+		language.setLevel(languageRequest.level());
+		
+		Resume resume = new Resume();
+		resume.setId(languageRequest.resumeId());
+		language.setResume(resume);
+		
 		this.languageDao.save(language);
 		return new SuccessResult("Language has been added successfully.");
 	}

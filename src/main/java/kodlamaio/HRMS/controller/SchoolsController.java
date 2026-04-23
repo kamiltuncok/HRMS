@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kodlamaio.HRMS.service.*;
 import kodlamaio.HRMS.entities.concretes.School;
+import kodlamaio.HRMS.dto.SchoolRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,8 +29,8 @@ public class SchoolsController extends BaseController {
 	}
 
 	@PostMapping(value = "/add")
-	public ResponseEntity<?> add(@RequestBody School school) {
-		return Ok(() -> this.schoolService.add(school));
+	public ResponseEntity<?> add(@RequestBody SchoolRequest schoolRequest) {
+		return Ok(() -> this.schoolService.add(schoolRequest));
 	}
 
 	@PostMapping(value = "/delete")

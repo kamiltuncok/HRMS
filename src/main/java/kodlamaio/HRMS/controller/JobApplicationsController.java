@@ -28,4 +28,14 @@ public class JobApplicationsController extends BaseController {
     public ResponseEntity<?> getByJobSeekerId(@RequestParam Long jobSeekerId) {
         return Ok(() -> this.jobApplicationService.getByJobSeekerId(jobSeekerId));
     }
+
+    @GetMapping("/getbyemployerid")
+    public ResponseEntity<?> getByEmployerId(@RequestParam Long employerId) {
+        return Ok(() -> this.jobApplicationService.getByEmployerId(employerId));
+    }
+
+    @PutMapping("/updatestatus")
+    public ResponseEntity<?> updateStatus(@RequestParam Long id, @RequestParam String status) {
+        return Ok(() -> this.jobApplicationService.updateStatus(id, status));
+    }
 }

@@ -1,1 +1,1 @@
-ALTER TABLE job_advertisements ADD COLUMN open_positions INTEGER NOT NULL DEFAULT 1;
+-- Bu sutun V1 icerisinde zaten tanimlandigi icin cakisma olmamasi adina burasi bos birakilmistir.

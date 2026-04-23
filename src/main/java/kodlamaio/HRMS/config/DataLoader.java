@@ -4,6 +4,7 @@ import kodlamaio.HRMS.entities.concretes.*;
 import kodlamaio.HRMS.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class DataLoader implements CommandLineRunner {
     private final JobSeekerDao jobSeekerDao;
     private final JobAdvertisementDao jobAdvertisementDao;
     private final JobApplicationDao jobApplicationDao;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -55,7 +57,40 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void seedSamples() {
-        if (jobAdvertisementDao.count() > 0) return;
+        if (employerDao.count() == 0) {
+            Role employerRole = roleDao.findByRoleName(Role.EMPLOYER).orElse(null);
+            if (employerRole != null) {
+                for (int i = 1; i <= 5; i++) {
+                    Employer employer = new Employer();
+                    employer.setEmail("employer" + i + "@example.com");
+                    employer.setPassword(passwordEncoder.encode("12345"));
+                    employer.setRole(employerRole);
+                    employer.setCompanyName("Company " + i);
+                    employer.setWebAddress("www.company" + i + ".com");
+                    employer.setPhoneNumber("123456789" + i);
+                    employerDao.save(employer);
+                }
+            }
+        }
+
+        if (jobSeekerDao.count() == 0) {
+            Role seekerRole = roleDao.findByRoleName(Role.JOBSEEKER).orElse(null);
+            if (seekerRole != null) {
+                for (int i = 1; i <= 5; i++) {
+                    JobSeeker seeker = new JobSeeker();
+                    seeker.setEmail("seeker" + i + "@example.com");
+                    seeker.setPassword(passwordEncoder.encode("12345"));
+                    seeker.setRole(seekerRole);
+                    seeker.setFirstName("SeekerFirst" + i);
+                    seeker.setLastName("SeekerLast" + i);
+                    seeker.setBirthDate(LocalDate.of(1990 + i, 1, 1));
+                    seeker.setPhoneNumber("987654321" + i);
+                    jobSeekerDao.save(seeker);
+                }
+            }
+        }
+
+        if (jobAdvertisementDao.count() >= 5) return;
 
         var employers = employerDao.findAll();
         var cities = cityDao.findAll();
@@ -71,7 +106,7 @@ public class DataLoader implements CommandLineRunner {
             ad.setStartDate(LocalDate.now());
             ad.setEndDate(LocalDate.now().plusMonths(1));
             ad.setStatus(true);
-            ad.setEmployer(employers.get(0));
+            ad.setEmployer(employers.get(i % employers.size()));
             ad.setCity(cities.get(i % cities.size()));
             ad.setJobTitle(titles.get(i % titles.size()));
             ad.setTypeOfWork(types.get(i % types.size()));
@@ -81,7 +116,7 @@ public class DataLoader implements CommandLineRunner {
             if (!seekers.isEmpty()) {
                 JobApplication app = new JobApplication();
                 app.setApplicationDate(LocalDate.now());
-                app.setJobSeeker(seekers.get(0));
+                app.setJobSeeker(seekers.get(i % seekers.size()));
                 app.setJobAdvertisement(ad);
                 app.setStatus("PENDING");
                 jobApplicationDao.save(app);

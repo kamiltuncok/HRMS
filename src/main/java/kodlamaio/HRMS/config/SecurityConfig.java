@@ -52,7 +52,11 @@ public class SecurityConfig {
                                 "/api/jobexperiences/**",
                                 "/api/schools/**",
                                 "/api/languages/**",
-                                "/api/skills/**")
+                                "/api/skills/**",
+                                "/api/jobseekers/**",
+                                "/api/typeofwork/**",
+                                "/api/photos/**",
+                                "/api/jobapplications/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

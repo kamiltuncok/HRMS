@@ -19,11 +19,11 @@ public class Language {
     private Long id;
 
     @com.fasterxml.jackson.annotation.JsonProperty("languageName")
-    @Column(name = "name")
+    @Column(name = "language_name")
     private String name;
 
-    @Column(name = "level")
-    private int level; // 1-5
+    @Column(name = "language_level")
+    private String level;
 
     @lombok.ToString.Exclude
     @lombok.EqualsAndHashCode.Exclude

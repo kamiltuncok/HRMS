@@ -19,6 +19,10 @@ public interface JobApplicationMapper {
 
     @Mapping(target = "jobAdvertisementId", source = "jobAdvertisement.id")
     @Mapping(target = "jobSeekerId", source = "jobSeeker.id")
+    @Mapping(target = "jobSeekerFirstName", source = "jobSeeker.firstName")
+    @Mapping(target = "jobSeekerLastName", source = "jobSeeker.lastName")
+    @Mapping(target = "jobSeekerEmail", source = "jobSeeker.email")
+    @Mapping(target = "jobTitle", source = "jobAdvertisement.jobTitle.title")
     @Mapping(target = "jobDescription", source = "jobAdvertisement.description")
     @Mapping(target = "companyName", source = "jobAdvertisement.employer.companyName")
     JobApplicationResponse toResponse(JobApplication entity);

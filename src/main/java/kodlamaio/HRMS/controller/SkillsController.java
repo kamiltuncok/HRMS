@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kodlamaio.HRMS.service.*;
 import kodlamaio.HRMS.entities.concretes.Skill;
+import kodlamaio.HRMS.dto.SkillRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,8 +28,8 @@ public class SkillsController extends BaseController {
 	}
 
 	@PostMapping(value = "/add")
-	public ResponseEntity<?> add(@RequestBody Skill skill) {
-		return Ok(() -> this.skillService.add(skill));
+	public ResponseEntity<?> add(@RequestBody SkillRequest skillRequest) {
+		return Ok(() -> this.skillService.add(skillRequest));
 	}
 
 	@PostMapping(value = "/delete")

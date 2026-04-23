@@ -10,4 +10,6 @@ public interface JobApplicationService {
     DataResult<JobApplicationResponse> add(JobApplicationRequest request);
     DataResult<List<JobApplicationResponse>> getAll();
     DataResult<List<JobApplicationResponse>> getByJobSeekerId(Long jobSeekerId);
+    DataResult<List<JobApplicationResponse>> getByEmployerId(Long employerId);
+    DataResult<JobApplicationResponse> updateStatus(Long id, String status);
 }
