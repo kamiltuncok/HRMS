@@ -8,5 +8,6 @@ public record JobSeekerResponse(
         String lastName,
         String email,
         String phoneNumber,
-        LocalDate birthDate) {
+        LocalDate birthDate,
+        String profileImageUrl) {
 }

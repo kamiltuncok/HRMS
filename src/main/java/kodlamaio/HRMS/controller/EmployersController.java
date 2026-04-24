@@ -26,7 +26,7 @@ public class EmployersController extends BaseController {
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<?> update(@RequestParam Long id, @Valid @RequestBody EmployerRequest employerRequest) {
+	public ResponseEntity<?> update(@RequestParam Long id, @Valid @RequestBody kodlamaio.HRMS.dto.EmployerUpdateRequest employerRequest) {
 		return Ok(() -> this.employerService.update(id, employerRequest));
 	}
 

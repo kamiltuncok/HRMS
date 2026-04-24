@@ -56,7 +56,9 @@ public class SecurityConfig {
                                 "/api/jobseekers/**",
                                 "/api/typeofwork/**",
                                 "/api/photos/**",
-                                "/api/jobapplications/**")
+                                "/api/jobapplications/**",
+                                "/api/files/**",
+                                "/uploads/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

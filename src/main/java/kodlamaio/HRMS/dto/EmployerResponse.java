@@ -5,5 +5,6 @@ public record EmployerResponse(
                 String companyName,
                 String webAddress,
                 String phoneNumber,
-                String email) {
+                String email,
+                String profileImageUrl) {
 }

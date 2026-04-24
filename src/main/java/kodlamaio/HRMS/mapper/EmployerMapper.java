@@ -16,6 +16,12 @@ public interface EmployerMapper {
     @Mapping(target = "role", ignore = true)
     Employer toEntity(EmployerRequest request);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "jobAdvertisements", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    Employer toEntity(kodlamaio.HRMS.dto.EmployerUpdateRequest request);
+
     EmployerResponse toResponse(Employer entity);
 
     List<EmployerResponse> toResponseList(List<Employer> entities);

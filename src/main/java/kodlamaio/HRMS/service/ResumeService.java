@@ -29,4 +29,6 @@ public interface ResumeService {
 	DataResult<String> uploadPhoto(Long jobSeekerId, org.springframework.web.multipart.MultipartFile file);
 
 	DataResult<String> uploadCv(Long jobSeekerId, org.springframework.web.multipart.MultipartFile file);
+
+	org.springframework.core.io.Resource downloadCv(Long jobSeekerId);
 }

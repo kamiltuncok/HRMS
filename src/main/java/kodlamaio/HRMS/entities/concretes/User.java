@@ -35,6 +35,9 @@ public abstract class User implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
     @com.fasterxml.jackson.annotation.JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

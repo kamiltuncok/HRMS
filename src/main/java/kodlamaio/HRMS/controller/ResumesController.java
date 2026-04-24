@@ -7,6 +7,10 @@ import kodlamaio.HRMS.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 @RestController
 @RequestMapping("/api/resumes")
 @RequiredArgsConstructor
@@ -38,6 +42,18 @@ public class ResumesController extends BaseController {
     @PostMapping("/uploadcv")
     public ResponseEntity<?> uploadCv(@RequestParam Long jobSeekerId, @RequestParam MultipartFile file) {
         return Ok(() -> this.resumeService.uploadCv(jobSeekerId, file));
+    }
+
+    @GetMapping("/downloadcv")
+    public ResponseEntity<Resource> downloadCv(@RequestParam Long jobSeekerId) {
+        Resource resource = this.resumeService.downloadCv(jobSeekerId);
+        if (resource == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 
     @GetMapping("/getbyjobseekerid")

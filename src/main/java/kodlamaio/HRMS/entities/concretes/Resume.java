@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +45,15 @@ public class Resume {
 
     @Column(name = "summary")
     private String summary;
+
+    @Column(name = "cv_file_path")
+    private String cvFilePath;
+
+    @Column(name = "cv_file_name")
+    private String cvFileName;
+
+    @Column(name = "cv_upload_date")
+    private LocalDateTime cvUploadDate;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "photo_id")

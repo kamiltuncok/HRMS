@@ -15,5 +15,7 @@ public record JobSeekerUpdateRequest(
 
                 @NotBlank(message = "Email is mandatory") @Email(message = "Invalid email format") String email,
 
-                String phoneNumber) {
+                String phoneNumber,
+                
+                String profileImageUrl) {
 }

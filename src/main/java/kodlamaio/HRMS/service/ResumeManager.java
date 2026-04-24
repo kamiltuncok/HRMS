@@ -17,6 +17,16 @@ import kodlamaio.HRMS.entities.concretes.JobSeeker;
 import kodlamaio.HRMS.entities.concretes.Photo;
 import kodlamaio.HRMS.entities.concretes.Resume;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class ResumeManager implements ResumeService {
@@ -130,9 +140,64 @@ public class ResumeManager implements ResumeService {
 		return new SuccessDataResult<>(photo.getPhotoUrl(), "Photo uploaded successfully.");
 	}
 
+	private final String UPLOAD_DIR = "uploads/cv/";
+
 	@Override
 	public DataResult<String> uploadCv(Long jobSeekerId, MultipartFile file) {
-		// CV upload logic goes here (similar to photo or just URL saving)
-		return new SuccessDataResult<>("CV uploaded successfully.");
+		Resume resume = this.resumeDao.findByJobSeeker_Id(jobSeekerId);
+		if (resume == null) {
+			return new ErrorDataResult<>("Resume not found for job seeker ID: " + jobSeekerId);
+		}
+
+		if (file.isEmpty() || file.getContentType() == null || !file.getContentType().equals("application/pdf")) {
+			return new ErrorDataResult<>("Invalid file. Only PDF files are allowed.");
+		}
+
+		try {
+			Path uploadPath = Paths.get(UPLOAD_DIR);
+			if (!Files.exists(uploadPath)) {
+				Files.createDirectories(uploadPath);
+			}
+
+			if (resume.getCvFilePath() != null) {
+				Path oldFile = Paths.get(resume.getCvFilePath());
+				Files.deleteIfExists(oldFile);
+			}
+
+			String fileName = UUID.randomUUID().toString() + ".pdf";
+			Path filePath = uploadPath.resolve(fileName);
+			Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+			resume.setCvFileName(file.getOriginalFilename());
+			resume.setCvFilePath(filePath.toString());
+			resume.setCvUploadDate(LocalDateTime.now());
+			
+			this.resumeDao.save(resume);
+
+			return new SuccessDataResult<>("CV uploaded successfully.");
+		} catch (IOException e) {
+			return new ErrorDataResult<>("Could not save the file: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public Resource downloadCv(Long jobSeekerId) {
+		Resume resume = this.resumeDao.findByJobSeeker_Id(jobSeekerId);
+		if (resume == null || resume.getCvFilePath() == null) {
+			return null;
+		}
+
+		try {
+			Path file = Paths.get(resume.getCvFilePath());
+			Resource resource = new UrlResource(file.toUri());
+
+			if (resource.exists() || resource.isReadable()) {
+				return resource;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

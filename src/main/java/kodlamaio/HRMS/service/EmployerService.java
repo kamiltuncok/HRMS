@@ -11,7 +11,7 @@ public interface EmployerService {
 
 	DataResult<EmployerResponse> add(EmployerRequest request);
 
-	DataResult<EmployerResponse> update(Long id, EmployerRequest request);
+	DataResult<EmployerResponse> update(Long id, kodlamaio.HRMS.dto.EmployerUpdateRequest request);
 
 	Result delete(Long id);
 

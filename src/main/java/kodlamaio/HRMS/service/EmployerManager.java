@@ -48,15 +48,13 @@ public class EmployerManager implements EmployerService {
 	}
 
 	@Override
-	public DataResult<EmployerResponse> update(Long id, EmployerRequest request) {
+	public DataResult<EmployerResponse> update(Long id, kodlamaio.HRMS.dto.EmployerUpdateRequest request) {
 		return this.employerDao.findById(id)
 				.<DataResult<EmployerResponse>>map(existing -> {
 					Employer updatedEntity = mapper.toEntity(request);
 					updatedEntity.setId(id);
-					updatedEntity.setPassword(passwordEncoder.encode(request.password()));
-					Role role = roleDao.findByRoleName(Role.EMPLOYER)
-							.orElseThrow(() -> new RuntimeException("Role not found: " + Role.EMPLOYER));
-					updatedEntity.setRole(role);
+					updatedEntity.setPassword(existing.getPassword()); // Keep existing password
+					updatedEntity.setRole(existing.getRole()); // Keep existing role
 					
 					var savedEntity = this.employerDao.save(updatedEntity);
 					return new SuccessDataResult<>(mapper.toResponse(savedEntity),
