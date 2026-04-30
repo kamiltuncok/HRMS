@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {JobTitleMapper.class})
 public interface JobAdvertisementMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -33,8 +33,6 @@ public interface JobAdvertisementMapper {
     @Mapping(target = "name", source = "name")
     CityResponse toCityResponse(City city);
 
-    @Mapping(target = "title", source = "title")
-    JobTitleResponse toJobTitleResponse(JobTitle title);
 
     @Mapping(target = "name", source = "name")
     TypeOfWorkResponse toTypeOfWorkResponse(TypeOfWork type);

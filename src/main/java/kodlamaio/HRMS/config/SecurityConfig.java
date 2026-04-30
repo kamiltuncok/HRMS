@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/api/employers/**",
                                 "/api/cities/**",
                                 "/api/jobtitles/**",
+                                "/api/categories/**",
                                 "/v2/api-docs",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",

@@ -43,7 +43,7 @@ public class DataLoader implements CommandLineRunner {
         // Seed Job Titles
         if (jobTitleDao.count() == 0) {
             List.of("Software Engineer", "Frontend Developer", "Backend Developer", "Product Manager", "UI/UX Designer")
-                .forEach(title -> jobTitleDao.save(new JobTitle(null, title, null)));
+                .forEach(title -> jobTitleDao.save(new JobTitle(null, title, null, null)));
         }
 
         // Seed Types of Work

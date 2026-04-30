@@ -11,6 +11,8 @@ import kodlamaio.HRMS.core.utilities.results.SuccessDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessResult;
 import kodlamaio.HRMS.repository.JobTitleDao;
 import kodlamaio.HRMS.entities.concretes.JobTitle;
+import kodlamaio.HRMS.dto.JobTitleResponse;
+import kodlamaio.HRMS.mapper.JobTitleMapper;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -18,10 +20,11 @@ import lombok.RequiredArgsConstructor;
 public class JobTitleManager implements JobTitleService {
 
 	private final JobTitleDao jobTitleDao;
+	private final JobTitleMapper jobTitleMapper;
 
 	@Override
-	public DataResult<List<JobTitle>> getAll() {
-		return new SuccessDataResult<>(jobTitleDao.findAll(), "Job titles have been listed successfully.");
+	public DataResult<List<JobTitleResponse>> getAll() {
+		return new SuccessDataResult<>(jobTitleMapper.toResponseList(jobTitleDao.findAll()), "Job titles have been listed successfully.");
 	}
 
 	public boolean isPositionSavedBefore(JobTitle jobTitle) {
@@ -36,5 +39,11 @@ public class JobTitleManager implements JobTitleService {
 
 		jobTitleDao.save(jobTitle);
 		return new SuccessResult("Job position has been added successfully.");
+	}
+
+	@Override
+	public DataResult<List<JobTitleResponse>> getByCategory(Long categoryId) {
+		var jobTitles = jobTitleDao.findByCategory_Id(categoryId);
+		return new SuccessDataResult<>(jobTitleMapper.toResponseList(jobTitles), "Job titles for category listed successfully.");
 	}
 }

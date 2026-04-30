@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kodlamaio.HRMS.service.*;
@@ -28,5 +29,10 @@ public class JobTitlesController extends BaseController {
 	@PostMapping("/add")
 	public ResponseEntity<?> add(@RequestBody JobTitle jobTitle) {
 		return Ok(() -> jobTitleService.add(jobTitle));
+	}
+
+	@GetMapping("/getbycategory")
+	public ResponseEntity<?> getByCategory(@RequestParam Long categoryId) {
+		return Ok(() -> jobTitleService.getByCategory(categoryId));
 	}
 }

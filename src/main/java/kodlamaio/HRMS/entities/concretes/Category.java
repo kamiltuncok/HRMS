@@ -15,31 +15,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Set;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 @Data
-@Table(name = "job_titles")
+@Table(name = "categories")
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class JobTitle {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "title", nullable = false, unique = true)
-    private String title;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
     @lombok.ToString.Exclude
     @lombok.EqualsAndHashCode.Exclude
     @JsonIgnore
-    @OneToMany(mappedBy = "jobTitle", fetch = FetchType.LAZY)
-    private Set<JobAdvertisement> jobAdvertisements;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = true)
-    private Category category;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private Set<JobTitle> jobTitles;
 }

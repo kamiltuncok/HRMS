@@ -6,4 +6,5 @@ import kodlamaio.HRMS.entities.concretes.JobTitle;
 
 public interface JobTitleDao extends JpaRepository<JobTitle, Long> {
 	List<JobTitle> findByTitleContaining(String title);
+	List<JobTitle> findByCategory_Id(Long categoryId);
 }
