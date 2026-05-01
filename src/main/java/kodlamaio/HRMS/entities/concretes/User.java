@@ -38,6 +38,15 @@ public abstract class User implements UserDetails {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
+    @Column(name = "failed_attempts")
+    private Integer failedAttempts;
+
+    @Column(name = "lock_time")
+    private java.time.LocalDateTime lockTime;
+
+    @Version
+    private Long version;
+
     @com.fasterxml.jackson.annotation.JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

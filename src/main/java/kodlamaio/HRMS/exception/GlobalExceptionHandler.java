@@ -25,11 +25,25 @@ public class GlobalExceptionHandler {
         return new ErrorDataResult<>(validationErrors, "Validation Errors");
     }
 
-    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    @ExceptionHandler({
+        org.springframework.security.authentication.BadCredentialsException.class,
+        org.springframework.security.core.userdetails.UsernameNotFoundException.class
+    })
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorDataResult<Object> handleBadCredentialsException(
-            org.springframework.security.authentication.BadCredentialsException exception) {
-        return new ErrorDataResult<>("Invalid email or password", "Authentication Error");
+    public ErrorDataResult<Object> handleAuthExceptions(Exception exception) {
+        return new ErrorDataResult<>("Email veya şifre hatalı", "Authentication Error");
+    }
+
+    @ExceptionHandler(kodlamaio.HRMS.exception.AccountLockedException.class)
+    @ResponseStatus(HttpStatus.LOCKED)
+    public ErrorDataResult<Object> handleAccountLockedException(kodlamaio.HRMS.exception.AccountLockedException exception) {
+        return new ErrorDataResult<>(exception.getMessage(), "Account Locked");
+    }
+
+    @ExceptionHandler(kodlamaio.HRMS.exception.WeakPasswordException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDataResult<Object> handleWeakPasswordException(kodlamaio.HRMS.exception.WeakPasswordException exception) {
+        return new ErrorDataResult<>(exception.getMessage(), "Weak Password");
     }
 
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)

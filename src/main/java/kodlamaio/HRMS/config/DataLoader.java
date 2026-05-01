@@ -23,6 +23,7 @@ public class DataLoader implements CommandLineRunner {
     private final JobAdvertisementDao jobAdvertisementDao;
     private final JobApplicationDao jobApplicationDao;
     private final PasswordEncoder passwordEncoder;
+    private final UserDao userDao;
 
     @Override
     public void run(String... args) throws Exception {
