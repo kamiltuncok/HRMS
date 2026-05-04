@@ -19,9 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
 
-    private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
+    private final Map<String, Bucket> loginCache = new ConcurrentHashMap<>();
+    private final Map<String, Bucket> forgotPasswordCache = new ConcurrentHashMap<>();
 
-    private Bucket createNewBucket() {
+    private Bucket createLoginBucket() {
         // 10 requests per minute per IP
         long capacity = 10;
         Refill refill = Refill.greedy(10, Duration.ofMinutes(1));
@@ -29,8 +30,12 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         return Bucket.builder().addLimit(limit).build();
     }
 
-    private Bucket resolveBucket(String ip) {
-        return cache.computeIfAbsent(ip, k -> createNewBucket());
+    private Bucket createForgotPasswordBucket() {
+        // 5 requests per minute per IP (stricter)
+        long capacity = 5;
+        Refill refill = Refill.greedy(5, Duration.ofMinutes(1));
+        Bandwidth limit = Bandwidth.classic(capacity, refill);
+        return Bucket.builder().addLimit(limit).build();
     }
 
     private String getClientIP(HttpServletRequest request) {
@@ -46,12 +51,18 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         
         String path = request.getRequestURI();
+        String ip = getClientIP(request);
         
-        // Apply only to login and register endpoints
-        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
-            String ip = getClientIP(request);
-            Bucket bucket = resolveBucket(ip);
-            
+        if (path.startsWith("/api/auth/forgot-password")) {
+            Bucket bucket = forgotPasswordCache.computeIfAbsent(ip, k -> createForgotPasswordBucket());
+            if (bucket.tryConsume(1)) {
+                filterChain.doFilter(request, response);
+            } else {
+                response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+                response.getWriter().write("Too Many Requests");
+            }
+        } else if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
+            Bucket bucket = loginCache.computeIfAbsent(ip, k -> createLoginBucket());
             if (bucket.tryConsume(1)) {
                 filterChain.doFilter(request, response);
             } else {
@@ -63,3 +74,4 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         }
     }
 }
+

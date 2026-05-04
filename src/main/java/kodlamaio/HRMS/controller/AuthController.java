@@ -3,7 +3,9 @@ package kodlamaio.HRMS.controller;
 import jakarta.validation.Valid;
 import kodlamaio.HRMS.dto.AuthResponse;
 import kodlamaio.HRMS.dto.EmployerRequest;
+import kodlamaio.HRMS.dto.ForgotPasswordRequest;
 import kodlamaio.HRMS.dto.JobSeekerRequest;
+import kodlamaio.HRMS.dto.ResetPasswordRequest;
 import kodlamaio.HRMS.dto.UserForLoginRequest;
 import kodlamaio.HRMS.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +36,20 @@ public class AuthController extends BaseController {
 	public ResponseEntity<?> login(@Valid @RequestBody UserForLoginRequest loginRequest) {
 		return Ok(() -> this.authService.login(loginRequest));
 	}
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+		return Ok(() -> this.authService.forgotPassword(request));
+	}
+
+	@PostMapping("/reset-password")
+	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+		return Ok(() -> this.authService.resetPassword(request));
+	}
+
+	@GetMapping("/validate-reset-token")
+	public ResponseEntity<?> validateResetToken(@RequestParam String token) {
+		return Ok(() -> this.authService.validateResetToken(token));
+	}
 }
+

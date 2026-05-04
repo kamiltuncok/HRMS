@@ -12,9 +12,13 @@ public class BaseController {
 		try {
 			T t = call.call();
 			return ResponseEntity.ok(t);
-		}catch(Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (RuntimeException e) {
+			// Let RuntimeExceptions propagate to GlobalExceptionHandler
+			throw e;
+		} catch (Exception e) {
+			// Wrap checked exceptions as RuntimeException so they also reach the handler
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 }
+
