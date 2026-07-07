@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local secrets / environment ###
+# Real config with secrets stays local; commit application-example.properties instead.
+src/main/resources/application.properties
+.env
+
+### Eclipse workspace metadata ###
+.metadata/
