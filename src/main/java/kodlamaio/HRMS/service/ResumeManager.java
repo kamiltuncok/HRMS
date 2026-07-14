@@ -12,6 +12,7 @@ import kodlamaio.HRMS.core.utilities.results.ErrorDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessDataResult;
 import kodlamaio.HRMS.core.utilities.results.SuccessResult;
 import kodlamaio.HRMS.repository.ResumeDao;
+import kodlamaio.HRMS.repository.JobSeekerDao;
 import kodlamaio.HRMS.dto.ResumeRequest;
 import kodlamaio.HRMS.entities.concretes.JobSeeker;
 import kodlamaio.HRMS.entities.concretes.Photo;
@@ -33,11 +34,13 @@ public class ResumeManager implements ResumeService {
 
 	private final ResumeDao resumeDao;
 	private final PhotoService photoService;
+	private final JobSeekerDao jobSeekerDao;
 
 	@Autowired
-	public ResumeManager(ResumeDao resumeDao, PhotoService photoService) {
+	public ResumeManager(ResumeDao resumeDao, PhotoService photoService, JobSeekerDao jobSeekerDao) {
 		this.resumeDao = resumeDao;
 		this.photoService = photoService;
+		this.jobSeekerDao = jobSeekerDao;
 	}
 
 	@Override
@@ -47,16 +50,21 @@ public class ResumeManager implements ResumeService {
 
 	@Override
 	public DataResult<Resume> add(ResumeRequest request) {
-		Resume resume = new Resume();
-		if (request.id() != null) {
-			resume.setId(request.id());
+		// A job seeker has a single resume. Reuse the existing one instead of
+		// inserting a duplicate, so calling /add for an existing profile updates it.
+		Resume resume = this.resumeDao.findByJobSeeker_Id(request.jobSeekerId());
+		if (resume == null) {
+			// Load the managed JobSeeker; using a detached stub (new JobSeeker + setId)
+			// fails because JobSeeker is @Version-ed ("uninitialized version value").
+			JobSeeker jobSeeker = this.jobSeekerDao.findById(request.jobSeekerId()).orElse(null);
+			if (jobSeeker == null) {
+				return new ErrorDataResult<>("Job seeker not found for ID: " + request.jobSeekerId());
+			}
+			resume = new Resume();
+			resume.setJobSeeker(jobSeeker);
 		}
 		mapDtoToEntity(request, resume);
-		
-		JobSeeker js = new JobSeeker();
-		js.setId(request.jobSeekerId());
-		resume.setJobSeeker(js);
-		
+
 		this.resumeDao.save(resume);
 		return new SuccessDataResult<>(resume, "Resume has been added successfully.");
 	}
@@ -85,6 +93,25 @@ public class ResumeManager implements ResumeService {
 		resume.setLinkedinUrl(request.linkedinUrl());
 		resume.setSummary(request.summary());
 		resume.setPortfolioUrl(request.portfolioUrl());
+	}
+
+	/**
+	 * Returns the job seeker's resume, creating an empty one if none exists yet so
+	 * that CV/photo uploads work before the user fills in the rest of the profile.
+	 * Returns null only when the job seeker id itself is invalid.
+	 */
+	private Resume getOrCreateResume(Long jobSeekerId) {
+		Resume resume = this.resumeDao.findByJobSeeker_Id(jobSeekerId);
+		if (resume != null) {
+			return resume;
+		}
+		JobSeeker jobSeeker = this.jobSeekerDao.findById(jobSeekerId).orElse(null);
+		if (jobSeeker == null) {
+			return null;
+		}
+		resume = new Resume();
+		resume.setJobSeeker(jobSeeker);
+		return this.resumeDao.save(resume);
 	}
 
 	public DataResult<Resume> getResumeByJobSeeker_id(Long jsId) {
@@ -123,9 +150,9 @@ public class ResumeManager implements ResumeService {
 
 	@Override
 	public DataResult<String> uploadPhoto(Long jobSeekerId, MultipartFile file) {
-		Resume resume = this.resumeDao.findByJobSeeker_Id(jobSeekerId);
+		Resume resume = getOrCreateResume(jobSeekerId);
 		if (resume == null) {
-			return new ErrorDataResult<>("Resume not found for job seeker ID: " + jobSeekerId);
+			return new ErrorDataResult<>("Job seeker not found for ID: " + jobSeekerId);
 		}
 
 		Photo photo = new Photo();
@@ -144,9 +171,9 @@ public class ResumeManager implements ResumeService {
 
 	@Override
 	public DataResult<String> uploadCv(Long jobSeekerId, MultipartFile file) {
-		Resume resume = this.resumeDao.findByJobSeeker_Id(jobSeekerId);
+		Resume resume = getOrCreateResume(jobSeekerId);
 		if (resume == null) {
-			return new ErrorDataResult<>("Resume not found for job seeker ID: " + jobSeekerId);
+			return new ErrorDataResult<>("Job seeker not found for ID: " + jobSeekerId);
 		}
 
 		if (file.isEmpty() || file.getContentType() == null || !file.getContentType().equals("application/pdf")) {

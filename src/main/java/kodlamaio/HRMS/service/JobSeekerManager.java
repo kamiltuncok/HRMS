@@ -51,11 +51,20 @@ public class JobSeekerManager implements JobSeekerService {
 	public DataResult<JobSeekerResponse> update(Long id, kodlamaio.HRMS.dto.JobSeekerUpdateRequest request) {
 		return this.jobSeekerDao.findById(id)
 				.<DataResult<JobSeekerResponse>>map(existing -> {
-					JobSeeker updatedEntity = mapper.toEntity(request);
-					updatedEntity.setId(id);
-					updatedEntity.setPassword(existing.getPassword()); // Preserve password
-					updatedEntity.setRole(existing.getRole()); // Preserve role
-					var savedEntity = this.jobSeekerDao.save(updatedEntity);
+					// Mutate the managed entity so this is an UPDATE. Building a new entity
+					// and setId(id) makes Spring Data treat the null @Version as "new" and
+					// INSERT with an existing id -> duplicate key ("Bu kayıt zaten mevcut").
+					existing.setFirstName(request.firstName());
+					existing.setLastName(request.lastName());
+					existing.setBirthDate(request.birthDate());
+					existing.setEmail(request.email());
+					existing.setPhoneNumber(request.phoneNumber());
+					// Only touch the profile image when provided, so account edits (which
+					// don't send it) don't wipe an existing photo.
+					if (request.profileImageUrl() != null) {
+						existing.setProfileImageUrl(request.profileImageUrl());
+					}
+					var savedEntity = this.jobSeekerDao.save(existing);
 					return new SuccessDataResult<>(mapper.toResponse(savedEntity), "Job seeker updated successfully.");
 				})
 				.orElseGet(() -> new ErrorDataResult<>("Job seeker not found."));
