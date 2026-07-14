@@ -8,7 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import kodlamaio.HRMS.entities.concretes.JobAdvertisement;
 
+import kodlamaio.HRMS.entities.concretes.Employer;
+import kodlamaio.HRMS.entities.concretes.JobTitle;
+
 public interface JobAdvertisementDao extends JpaRepository<JobAdvertisement, Long> {
+
+	boolean existsByEmployerAndJobTitle(Employer employer, JobTitle jobTitle);
 
 	List<JobAdvertisement> findByStatusTrue();
 
