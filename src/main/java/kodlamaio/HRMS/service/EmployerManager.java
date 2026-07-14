@@ -51,12 +51,20 @@ public class EmployerManager implements EmployerService {
 	public DataResult<EmployerResponse> update(Long id, kodlamaio.HRMS.dto.EmployerUpdateRequest request) {
 		return this.employerDao.findById(id)
 				.<DataResult<EmployerResponse>>map(existing -> {
-					Employer updatedEntity = mapper.toEntity(request);
-					updatedEntity.setId(id);
-					updatedEntity.setPassword(existing.getPassword()); // Keep existing password
-					updatedEntity.setRole(existing.getRole()); // Keep existing role
-					
-					var savedEntity = this.employerDao.save(updatedEntity);
+					// Mutate the managed entity so this is an UPDATE. Building a new entity
+					// and setId(id) makes Spring Data treat the null @Version as "new" and
+					// INSERT with an existing id -> duplicate key ("Bu kayıt zaten mevcut").
+					existing.setCompanyName(request.companyName());
+					existing.setWebAddress(request.webAddress());
+					existing.setPhoneNumber(request.phoneNumber());
+					existing.setEmail(request.email());
+					// Only touch the profile image when provided, so account edits (which
+					// don't send it) don't wipe an existing photo.
+					if (request.profileImageUrl() != null) {
+						existing.setProfileImageUrl(request.profileImageUrl());
+					}
+
+					var savedEntity = this.employerDao.save(existing);
 					return new SuccessDataResult<>(mapper.toResponse(savedEntity),
 							"Employer has been updated successfully.");
 				})

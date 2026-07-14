@@ -6,11 +6,16 @@ import kodlamaio.HRMS.core.utilities.results.SuccessDataResult;
 import kodlamaio.HRMS.dto.JobApplicationRequest;
 import kodlamaio.HRMS.dto.JobApplicationResponse;
 import kodlamaio.HRMS.entities.concretes.JobApplication;
+import kodlamaio.HRMS.entities.concretes.JobSeeker;
+import kodlamaio.HRMS.entities.concretes.JobAdvertisement;
 import kodlamaio.HRMS.mapper.JobApplicationMapper;
 import kodlamaio.HRMS.repository.JobApplicationDao;
+import kodlamaio.HRMS.repository.JobSeekerDao;
+import kodlamaio.HRMS.repository.JobAdvertisementDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -19,10 +24,33 @@ public class JobApplicationManager implements JobApplicationService {
 
     private final JobApplicationDao jobApplicationDao;
     private final JobApplicationMapper jobApplicationMapper;
+    private final JobSeekerDao jobSeekerDao;
+    private final JobAdvertisementDao jobAdvertisementDao;
 
     @Override
     public DataResult<JobApplicationResponse> add(JobApplicationRequest request) {
-        JobApplication jobApplication = jobApplicationMapper.toEntity(request);
+        // Load managed entities. Mapping ids onto detached stubs fails because
+        // JobSeeker is @Version-ed ("uninitialized version value") and surfaced as
+        // the misleading "Bu kayıt zaten mevcut" error.
+        JobSeeker jobSeeker = this.jobSeekerDao.findById(request.jobSeekerId()).orElse(null);
+        if (jobSeeker == null) {
+            return new ErrorDataResult<>("Job seeker not found for ID: " + request.jobSeekerId());
+        }
+        JobAdvertisement jobAdvertisement = this.jobAdvertisementDao.findById(request.jobAdvertisementId()).orElse(null);
+        if (jobAdvertisement == null) {
+            return new ErrorDataResult<>("Job advertisement not found for ID: " + request.jobAdvertisementId());
+        }
+        if (this.jobApplicationDao.existsByJobSeeker_IdAndJobAdvertisement_Id(
+                request.jobSeekerId(), request.jobAdvertisementId())) {
+            return new ErrorDataResult<>("Bu ilana zaten başvurdunuz.");
+        }
+
+        JobApplication jobApplication = new JobApplication();
+        jobApplication.setJobSeeker(jobSeeker);
+        jobApplication.setJobAdvertisement(jobAdvertisement);
+        jobApplication.setApplicationDate(LocalDate.now());
+        jobApplication.setStatus("PENDING");
+
         this.jobApplicationDao.save(jobApplication);
         return new SuccessDataResult<>(jobApplicationMapper.toResponse(jobApplication), "Job application has been submitted successfully.");
     }
