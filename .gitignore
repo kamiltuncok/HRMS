@@ -36,6 +36,24 @@ build/
 # Real config with secrets stays local; commit application-example.properties instead.
 src/main/resources/application.properties
 .env
+.env.*
+!.env.example
 
 ### Eclipse workspace metadata ###
 .metadata/
+
+### Uploads & runtime data ###
+uploads/
+
+### Logs ###
+*.log
+
+### OS-generated files ###
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+
+### Docker ###
+docker-compose.override.yml
