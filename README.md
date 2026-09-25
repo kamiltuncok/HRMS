@@ -17,56 +17,71 @@ This repository is the **backend service**. The companion React frontend is loca
 ## System Architecture
 
 ```mermaid
-flowchart TD
-    Client["Client Applications<br/>(React Frontend: hrms-frontend :5173)"]
-    
-    subgraph SpringBootApp ["Spring Boot 3.2 Application (:8080)"]
-        subgraph SecurityFilter ["Security & Filter Pipeline"]
-            RateLimit["Bucket4j Rate Limiter<br/>(Token Bucket per IP)"]
-            JwtFilter["JwtAuthenticationFilter<br/>(Bearer Token Verification)"]
-            SecHeaders["Security Headers<br/>(CSP, HSTS, X-Frame-Options)"]
-        end
-        
-        subgraph APIControllers ["Presentation Layer (Controllers)"]
-            AuthController["AuthController (/api/auth)"]
-            JobAdvController["JobAdvertisementsController"]
-            ApplicationController["JobApplicationsController"]
-            ResumeController["ResumesController"]
-            RefControllers["Reference Controllers (Cities, Titles, Categories)"]
-        end
-        
-        subgraph ServiceLayer ["Domain & Business Layer"]
-            Managers["Service Implementations (Managers)"]
-            Mappers["MapStruct DTO Mappers"]
-            EmailService["MailService (SMTP Reset Tokens)"]
-            FileStorage["Cloudinary / Local File Storage Adapter"]
-        end
-        
-        subgraph DataLayer ["Persistence Layer"]
-            Repositories["Spring Data JPA Repositories"]
-            Flyway["Flyway Migration Engine (V1-V11)"]
-        end
-    end
-    
-    subgraph ExternalServices ["External Infrastructure"]
-        Postgres[("PostgreSQL Database (:5432)")]
-        CloudinaryAPI["Cloudinary CDN"]
-        SmtpServer["SMTP Server"]
+flowchart TB
+    %% ================= GLOBAL STYLES =================
+    classDef clientStyle fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#f8fafc,rx:8,ry:8;
+    classDef securityStyle fill:#2e1065,stroke:#a855f7,stroke-width:2px,color:#f8fafc,rx:8,ry:8;
+    classDef controllerStyle fill:#082f49,stroke:#0ea5e9,stroke-width:2px,color:#f8fafc,rx:8,ry:8;
+    classDef serviceStyle fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#f8fafc,rx:8,ry:8;
+    classDef dataStyle fill:#451a03,stroke:#f59e0b,stroke-width:2px,color:#f8fafc,rx:8,ry:8;
+    classDef infraStyle fill:#0f172a,stroke:#64748b,stroke-width:2px,color:#f8fafc,rx:8,ry:8;
+
+    %% ================= NODES & SUBGRAPHS =================
+    subgraph ClientTier [" 🌐 CLIENT PRESENTATION LAYER "]
+        Client["React 19 SPA Client<br/><b>hrms-frontend :5173</b><br/><i>(TypeScript + Tailwind + Zustand)</i>"]:::clientStyle
     end
 
-    Client -->|HTTP / JSON + JWT| RateLimit
-    RateLimit --> JwtFilter
+    subgraph BackendApp [" ⚡ SPRING BOOT 3.2 APPLICATION RUNTIME (:8080) "]
+        
+        subgraph SecurityPipeline [" 🛡️ Security & Defensive Gateway "]
+            RateLimiter{{"Bucket4j Rate Limiter<br/><i>Token Bucket IP Defense</i>"}}:::securityStyle
+            JwtFilter["JwtAuthenticationFilter<br/><i>HMAC-SHA Signed Bearer Verification</i>"]:::securityStyle
+            SecHeaders["Security Headers Pipeline<br/><i>HSTS, CSP, X-Frame-Options</i>"]:::securityStyle
+        end
+
+        subgraph PresentationLayer [" 📡 REST API Controller Endpoints "]
+            AuthController["AuthController<br/><code>/api/auth</code>"]:::controllerStyle
+            JobAdvController["JobAdvertisementsController<br/><code>/api/jobadvertisements</code>"]:::controllerStyle
+            AppController["JobApplicationsController<br/><code>/api/jobapplications</code>"]:::controllerStyle
+            ResumeController["ResumesController<br/><code>/api/resumes</code>"]:::controllerStyle
+            RefControllers["Reference Controllers<br/><code>/api/cities, /api/jobtitles</code>"]:::controllerStyle
+        end
+
+        subgraph BusinessLayer [" ⚙️ Domain Services & Business Logic "]
+            Managers["Core Business Managers<br/><i>(Transactional Domain Logic)</i>"]:::serviceStyle
+            Mappers[["MapStruct DTO Mappers<br/><i>(Compile-Time Zero-Reflection)</i>"]]:::serviceStyle
+            EmailService["MailService<br/><i>(SMTP Single-Use Token Delivery)</i>"]:::serviceStyle
+            StorageAdapter["File Storage Provider Adapter<br/><i>(Cloudinary & Disk Fallback)</i>"]:::serviceStyle
+        end
+
+        subgraph PersistenceLayer [" 🗄️ Persistence & Schema Orchestration "]
+            Repositories[("Spring Data JPA Repositories<br/><i>(Hibernate / Dynamic Queries)</i>")]:::dataStyle
+            FlywayEngine["Flyway Migration Engine<br/><i>(Versioned SQL Migrations V1-V11)</i>"]:::dataStyle
+        end
+    end
+
+    subgraph ExternalInfra [" ☁️ INFRASTRUCTURE & EXTERNAL CLOUD "]
+        Postgres[("PostgreSQL 14+ Relational Database<br/><code>localhost:5432 / Docker</code>")]:::infraStyle
+        CloudinaryCDN["Cloudinary Media CDN<br/><i>(Applicant Resumes & Avatars)</i>"]:::infraStyle
+        SmtpRelay["Transactional SMTP Server<br/><i>(Gmail / Mailgun Relay)</i>"]:::infraStyle
+    end
+
+    %% ================= CONNECTIONS =================
+    Client ==>|"HTTPS / REST JSON + Bearer JWT"| RateLimiter
+    RateLimiter --> JwtFilter
     JwtFilter --> SecHeaders
-    SecHeaders --> APIControllers
-    APIControllers --> Managers
-    Managers <--> Mappers
-    Managers --> Repositories
-    Managers --> EmailService
-    Managers --> FileStorage
-    Repositories --> Postgres
-    Flyway -.->|On Startup| Postgres
-    EmailService --> SmtpServer
-    FileStorage --> CloudinaryAPI
+    SecHeaders ==> PresentationLayer
+
+    PresentationLayer ==> Managers
+    Managers <-->|"Type-Safe DTO Transformation"| Mappers
+    Managers ==> Repositories
+    Managers -->|"Trigger Password Reset Loop"| EmailService
+    Managers -->|"Stream Upload Payloads"| StorageAdapter
+
+    Repositories ==>|"JPA / SQL Queries"| Postgres
+    FlywayEngine -.->|"Schema Baseline & Migrate on Boot"| Postgres
+    EmailService -->|"TLS Port 587"| SmtpRelay
+    StorageAdapter -->|"Media Asset Upload"| CloudinaryCDN
 ```
 
 ---
@@ -164,22 +179,112 @@ The PostgreSQL relational schema features strict foreign key constraints and aud
 
 ```mermaid
 erDiagram
-    Users ||--o| JobSeekers : "extends (PK=UserId)"
-    Users ||--o| Employers : "extends (PK=UserId)"
+    USERS ||--o| JOB_SEEKERS : "specializes to"
+    USERS ||--o| EMPLOYERS : "specializes to"
     
-    Employers ||--o{ JobAdvertisements : publishes
-    Cities ||--o{ JobAdvertisements : locates
-    JobTitles ||--o{ JobAdvertisements : classifies
-    TypeOfWork ||--o{ JobAdvertisements : specifies
-    
-    JobSeekers ||--o| Resumes : owns
-    Resumes ||--o{ JobExperiences : includes
-    Resumes ||--o{ Schools : includes
-    Resumes ||--o{ Skills : includes
-    Resumes ||--o{ Languages : includes
-    
-    JobSeekers ||--o{ JobApplications : submits
-    JobAdvertisements ||--o{ JobApplications : receives
+    USERS {
+        int id PK
+        varchar email "UK"
+        varchar password_hash
+        varchar user_type "SEEKER | EMPLOYER"
+        boolean is_verified
+        timestamp created_at
+    }
+
+    JOB_SEEKERS {
+        int user_id PK,FK
+        varchar first_name
+        varchar last_name
+        varchar national_identity "UK"
+        date date_of_birth
+    }
+
+    EMPLOYERS {
+        int user_id PK,FK
+        varchar company_name
+        varchar web_address
+        varchar phone_number
+        boolean is_confirmed_by_system
+    }
+
+    EMPLOYERS ||--o{ JOB_ADVERTISEMENTS : "publishes"
+    CITIES ||--o{ JOB_ADVERTISEMENTS : "locates"
+    JOB_TITLES ||--o{ JOB_ADVERTISEMENTS : "classifies"
+    TYPE_OF_WORK ||--o{ JOB_ADVERTISEMENTS : "defines"
+
+    JOB_ADVERTISEMENTS {
+        int id PK
+        int employer_id FK
+        int job_title_id FK
+        int city_id FK
+        int type_of_work_id FK
+        text description
+        decimal min_salary
+        decimal max_salary
+        int open_positions
+        date application_deadline
+        boolean is_active
+        timestamp created_at
+    }
+
+    JOB_SEEKERS ||--o| RESUMES : "owns"
+    RESUMES ||--o{ JOB_EXPERIENCES : "contains"
+    RESUMES ||--o{ SCHOOLS : "contains"
+    RESUMES ||--o{ SKILLS : "contains"
+    RESUMES ||--o{ LANGUAGES : "contains"
+
+    RESUMES {
+        int id PK
+        int job_seeker_id FK
+        varchar photo_url
+        varchar github_link
+        varchar linkedin_link
+        text cover_letter
+        timestamp created_at
+    }
+
+    JOB_EXPERIENCES {
+        int id PK
+        int resume_id FK
+        varchar company_name
+        varchar position
+        date start_date
+        date quit_date
+    }
+
+    SCHOOLS {
+        int id PK
+        int resume_id FK
+        varchar school_name
+        varchar department
+        date start_date
+        date graduation_date
+    }
+
+    SKILLS {
+        int id PK
+        int resume_id FK
+        varchar skill_name
+    }
+
+    LANGUAGES {
+        int id PK
+        int resume_id FK
+        varchar language_name
+        int level "1-5"
+    }
+
+    JOB_SEEKERS ||--o{ JOB_APPLICATIONS : "submits"
+    JOB_ADVERTISEMENTS ||--o{ JOB_APPLICATIONS : "receives"
+
+    JOB_APPLICATIONS {
+        int id PK
+        int job_seeker_id FK
+        int job_advertisement_id FK
+        varchar status "APPLIED | UNDER_REVIEW | ACCEPTED | REJECTED"
+        text notes
+        timestamp applied_at
+    }
 ```
 
 ---
