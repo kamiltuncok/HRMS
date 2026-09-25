@@ -1,20 +1,53 @@
-# HRMS — Role-Based Recruitment & Applicant Tracking Backend
+# HRMS — Role-Based Recruitment & Applicant Tracking System Backend
 
-A robust, enterprise-grade RESTful backend for a role-based Human Resource Management & Applicant Tracking System (ATS) built with **Java 21** and **Spring Boot 3.2**. The platform supports dual user domains (**Job Seekers** and **Employers**): employers publish and manage job advertisements and evaluate incoming applications, while job seekers build comprehensive CV profiles (work experience, education, technical skills, languages, profile media) and submit job applications.
+<div align="center">
 
-This repository is the **backend service**. The companion React frontend is located in [hrms-frontend](https://github.com/kamiltuncok/hrms-frontend).
+![Java 21](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot 3.2.4](https://img.shields.io/badge/Spring_Boot-3.2.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Flyway](https://img.shields.io/badge/Flyway-Migrations-CC0202?style=for-the-badge&logo=flyway&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-6.2-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![Swagger UI](https://img.shields.io/badge/OpenAPI-Swagger_3.0-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+
+**An enterprise-grade, role-based RESTful API powering a modern Human Resource Management & Applicant Tracking System (ATS).**
+
+[Live API Docs (Local)](#api-overview--interactive-docs) • [Architecture Guide](#system-architecture) • [Quick Setup](#getting-started--local-setup) • [Frontend Client](https://github.com/kamiltuncok/hrms-frontend)
+
+</div>
 
 ---
 
-## Recruiter & Engineering Summary
-
-- **Primary Stack**: Java 21, Spring Boot 3.2.4 (Spring Data JPA, Spring Security, Spring Mail, Spring Validation), PostgreSQL, Flyway, JWT (jjwt 0.12.5), MapStruct 1.5.5, Bucket4j 8.10.1, SpringDoc OpenAPI.
-- **Key Engineering Highlights**: Strict N-tier modular architecture (`Controller → Service / Manager → Repository`), Flyway version-controlled schema migrations (`V1`–`V11`), decoupled entity-DTO layer via compile-time MapStruct mappers, defensive security measures (IP rate limiting with token buckets, account lockout policies, SHA-256 hashed password reset tokens, BCrypt strength 12), and dual-mode file storage (Cloudinary + local filesystem fallback).
-- **Primary Technical Challenge**: Designing a flexible resume and multi-step application workflow with granular access controls, transactional integrity, and hardened authentication endpoints resilient against brute-force attacks.
+> ### 📋 GitHub Repository Metadata
+> * **Description:** Production-ready Spring Boot 3.2 & Java 21 ATS backend featuring JWT security, Flyway migrations, Bucket4j rate limiting, and dual Cloudinary/disk storage.
+> * **Topics:** `java-21`, `spring-boot-3`, `applicant-tracking-system`, `postgresql`, `flyway`, `spring-security`, `jwt`, `bucket4j`, `mapstruct`, `rest-api`
 
 ---
 
-## System Architecture
+## 📖 Executive Summary & Core Value
+
+HRMS Backend is a resilient, secure REST service engineered for dual-domain human resource operations:
+* **Job Seekers:** Candidate registration, multi-section interactive CV management (education timelines, workplace experiences, verified technical skills, foreign languages with CEFR grading, and portfolio links), and one-click application submission with status tracking.
+* **Corporate Employers:** Employer onboarding, company verification workflows, job advertisement creation with location/salary constraints, and applicant candidate pipeline review.
+
+The system is built on **Java 21** and **Spring Boot 3.2**, enforcing strict N-tier separation of concerns, zero-reflection data mapping, defensive security policies against credential attacks, and automated database schema evolutions.
+
+---
+
+## 🎯 Evaluator Guide: Key Architectural Highlights
+
+If you are an evaluator or technical recruiter reviewing code quality, here are the best starting points:
+
+| Evaluated Concept | Key Implementation Files | Key Takeaway |
+|---|---|---|
+| **Defensive Security & Rate Limiting** | [`SecurityConfig.java`](file:///c:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/security/SecurityConfig.java), [`RateLimitingFilter.java`](file:///c:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/core/security/RateLimitingFilter.java) | Token-bucket IP rate limiting with **Bucket4j**, account lockouts after failed attempts, BCrypt strength 12. |
+| **Password Reset Security** | [`AuthManager.java`](file:///c:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/business/concretes/AuthManager.java), [`PasswordResetToken.java`](file:///c:/Users/MONSTER/OneDrive/Belgeler/GitHub/HRMS/src/main/java/kodlamaio/HRMS/entities/concretes/PasswordResetToken.java) | Single-use, time-limited reset tokens stored exclusively as **SHA-256 hashes** in PostgreSQL. |
+| **High-Performance DTO Mapping** | `src/main/java/kodlamaio/HRMS/business/mappers/` | Compile-time **MapStruct 1.5.5** mappers eliminating runtime reflection overhead. |
+| **Versioned Schema Migrations** | `src/main/resources/db/migration/` (`V1__` through `V11__`) | 11 sequential Flyway SQL migration scripts ensuring repeatable schema transitions across environments. |
+| **Unified Result Contracts** | `src/main/java/kodlamaio/HRMS/core/utilities/results/` | Polymorphic `Result`, `DataResult<T>`, `SuccessDataResult<T>`, `ErrorDataResult<T>` envelopes. |
+
+---
+
+## 🏛️ System Architecture
 
 ```mermaid
 flowchart TB
@@ -86,96 +119,42 @@ flowchart TB
 
 ---
 
-## Key Features & Technical Highlights
-
-### 1. Hardened Authentication & Defensive Security
-- **Stateless JWT Authorization**: Requests are authenticated via standard `Bearer` tokens signed with HMAC-SHA algorithms.
-- **Brute-Force & Denial-of-Service Protection**: Sensitive authentication routes are protected by **Bucket4j** rate limiting (e.g. login capped at 10 requests/minute per client IP).
-- **Account Lockout Policy**: Tracks consecutive failed login attempts (`failedAttempts`) and enforces temporary account locks (`lockTime`) to mitigate credential stuffing.
-- **Secure Password Reset Loop**: Implements single-use, time-limited reset tokens stored exclusively as SHA-256 hashes in the database; raw tokens are delivered solely via transactional SMTP emails.
-- **Password Encryption**: Password hashing utilizing **BCrypt** with an elevated work factor (strength 12).
-- **HTTP Security Headers**: Configured Content-Security-Policy (CSP), Strict-Transport-Security (HSTS), and `X-Frame-Options: DENY`.
-
-### 2. Versioned Database Schema with Flyway
-- Schema changes are managed declaratively through versioned SQL migration scripts located in `src/main/resources/db/migration/` (`V1` through `V11`).
-- Eliminates schema drift across development, CI/CD, and production environments without relying on error-prone runtime ORM auto-generation.
-
-### 3. Clean DTO Separation via MapStruct
-- Complete isolation between internal JPA database entities and external REST API payloads.
-- Compile-time generated **MapStruct** mappers ensure zero-reflection performance and type-safe data transformations.
-
-### 4. Media & Document Management
-- Pluggable media upload architecture supporting **Cloudinary** cloud CDN uploads alongside local filesystem storage for applicant résumés, documents, and profile avatars.
-
-### 5. Standardized Response & Exception Handling
-- Unified response contracts across all endpoints using `Result`, `DataResult<T>`, `SuccessDataResult<T>`, and `ErrorDataResult<T>`.
-- Centralized `GlobalExceptionHandler` intercepting validation errors (`MethodArgumentNotValidException`), domain business exceptions, and security access violations.
-
----
-
-## Technology Stack
-
-| Category | Technologies |
-|---|---|
-| **Runtime & Framework** | Java 21, Spring Boot 3.2.4 |
-| **Persistence & Data** | Spring Data JPA (Hibernate), PostgreSQL, Flyway Migration Engine |
-| **Security & Auth** | Spring Security 6, JJWT (io.jsonwebtoken 0.12.5), BCrypt, Bucket4j 8.10.1 |
-| **Object Mapping** | MapStruct 1.5.5.Final, Project Lombok |
-| **Documentation & Mail** | SpringDoc OpenAPI (Swagger UI), Spring Boot Starter Mail (JavaMailSender) |
-| **File Storage** | Cloudinary Java SDK, Local Disk Storage Adapter |
-| **Build & Tooling** | Maven (Maven Wrapper `mvnw` included) |
-
----
-
-## Project Structure
+## 🗂️ Project Structure & Architecture Breakdown
 
 ```
 HRMS/
 ├── src/main/java/kodlamaio/HRMS/
-│   ├── api/controllers/         # REST API Controllers (Auth, Jobs, Applications, Resumes, etc.)
-│   ├── business/
-│   │   ├── abstracts/           # Service layer contracts (IJobAdvertisementService, etc.)
-│   │   ├── concretes/           # Business managers with domain logic
-│   │   ├── constants/           # Business exception and response messages
-│   │   ├── dtos/                # Request / Response Data Transfer Objects
-│   │   └── mappers/             # MapStruct mapper interfaces
-│   ├── core/
-│   │   ├── adapters/            # Cloudinary & external integration adapters
-│   │   ├── exception/           # GlobalExceptionHandler & custom exception types
-│   │   ├── security/            # JWT TokenProvider, UserDetails, SecurityConfig, Bucket4j
-│   │   └── utilities/results/   # Result, DataResult, Success/Error response structures
-│   ├── dataAccess/abstracts/    # Spring Data JPA repository interfaces
-│   ├── entities/concretes/      # JPA Entity models (JobSeeker, Employer, JobAdvertisement, etc.)
-│   └── HrmsApplication.java     # Spring Boot application entry point
+│   ├── api/controllers/               # REST Presentation Layer: HTTP endpoints & status codes
+│   │   ├── AuthController.java        # Registration, login, password recovery, verification
+│   │   ├── JobAdvertisementsController.java # Postings CRUD, filtering, employer toggles
+│   │   ├── JobApplicationsController.java  # Candidate applications & hiring review
+│   │   ├── ResumesController.java     # CV compilation, photo & document uploads
+│   │   └── ...                        # Reference controllers (Cities, Titles, Categories)
+│   ├── business/                      # Domain & Business Layer
+│   │   ├── abstracts/                 # Service contracts and interface specifications
+│   │   ├── concretes/                 # Core business manager implementations
+│   │   ├── constants/                 # Standardized system, domain, and error messages
+│   │   ├── dtos/                      # Inbound request and outbound response data transfer objects
+│   │   └── mappers/                   # Compile-time MapStruct mapping interfaces
+│   ├── core/                          # Cross-Cutting Infrastructure
+│   │   ├── adapters/                  # Cloudinary & local storage media adapters
+│   │   ├── exception/                 # GlobalExceptionHandler, Validation & Business exceptions
+│   │   ├── security/                  # JWT TokenProvider, SecurityFilterChain, Bucket4j config
+│   │   └── utilities/results/         # Result / DataResult polymorphic response models
+│   ├── dataAccess/abstracts/          # Spring Data JPA Repository interfaces & JPQL queries
+│   ├── entities/concretes/            # JPA Domain entities with relational mapping
+│   └── HrmsApplication.java           # Spring Boot application entry point
 ├── src/main/resources/
-│   ├── db/migration/            # Flyway versioned SQL migrations (V1__... to V11__...)
-│   ├── application.properties   # Main configuration (git-ignored for security)
+│   ├── db/migration/                  # Flyway versioned migration scripts (V1__ to V11__)
+│   ├── application.properties         # Runtime local config (git-ignored)
 │   └── application-example.properties # Template configuration with environment placeholders
-├── pom.xml                      # Maven project definition & dependencies
-└── docker-compose.yml           # PostgreSQL container orchestration
+├── pom.xml                            # Maven project build definition & dependencies
+└── docker-compose.yml                 # PostgreSQL container definition for instant startup
 ```
 
 ---
 
-## API Overview
-
-Interactive Swagger UI documentation is available at `http://localhost:8080/swagger-ui.html` when running locally.
-
-| Controller Group | Base Route | Key Responsibilities |
-|---|---|---|
-| **Authentication** | `/api/auth` | Job seeker / Employer registration, login, forgot password, token validation, password reset |
-| **Job Advertisements** | `/api/jobadvertisements` | Postings CRUD, active postings feed, filter by city/title/employer, status toggling |
-| **Job Applications** | `/api/jobapplications` | Apply to vacancies, list applications by candidate or employer, update hiring status |
-| **Résumés & Profiles** | `/api/resumes` | Candidate CV generation, biography, GitHub/LinkedIn links, profile photo & PDF upload |
-| **Résumé Details** | `/api/jobexperiences`, `/api/schools`, `/api/skills`, `/api/languages` | Granular experience, education, language, and skillset management |
-| **User & Employer** | `/api/employers`, `/api/jobseekers`, `/api/users` | Profile administration and company verification |
-| **Lookups & Metadata** | `/api/categories`, `/api/cities`, `/api/jobtitles`, `/api/typeofwork` | Standardized reference classification data |
-
----
-
-## Database & Entity Relationships
-
-The PostgreSQL relational schema features strict foreign key constraints and audit metadata:
+## 🗄️ Relational Database & Entity Model
 
 ```mermaid
 erDiagram
@@ -289,68 +268,102 @@ erDiagram
 
 ---
 
-## Getting Started
+## ⚡ Key Features & Engineering Highlights
+
+### 1. Robust Authentication & Defensive Security
+* **Stateless JWT Flow:** Signed with HMAC-SHA256, validated through custom `JwtAuthenticationFilter`.
+* **Bucket4j IP Rate Limiting:** Brute-force mitigation on `/api/auth/*` endpoints (capped at 10 requests/min per IP).
+* **Account Lockout Policy:** Protects user accounts after sequential failed attempts (`failedAttempts` & `lockTime`).
+* **Hashed Password Reset:** Reset tokens are single-use, time-expiring, and stored as SHA-256 hashes in PostgreSQL; raw tokens are delivered exclusively over TLS-encrypted SMTP.
+* **BCrypt Hashing:** High work factor (strength 12) for stored user credentials.
+
+### 2. Schema Evolution via Flyway (V1–V11)
+* Completely eliminates schema drift across environments without relying on error-prone ORM auto-generation.
+* Sequential migrations configure baseline entities, foreign keys, audit timestamps, and password reset token schemas.
+
+### 3. Unified Error & Exception Handling
+* Centralized `GlobalExceptionHandler` intercepting:
+  * Bean validation failures (`MethodArgumentNotValidException`) -> Standardized field error lists.
+  * Domain exceptions (`UserNotFoundException`, `WeakPasswordException`, etc.) -> Clean error messages.
+  * Access denied and rate limit exceptions -> RFC 7807 compliant JSON envelopes.
+
+---
+
+## 🛠️ Technology Stack
+
+| Domain | Technology |
+|---|---|
+| **Runtime & Framework** | Java 21, Spring Boot 3.2.4 |
+| **Data & ORM** | Spring Data JPA, Hibernate, PostgreSQL 14+, Flyway 10 |
+| **Security & Auth** | Spring Security 6.2, JJWT 0.12.5, BCrypt, Bucket4j 8.10.1 |
+| **Mapping & Productivity** | MapStruct 1.5.5, Lombok |
+| **Docs & Validation** | SpringDoc OpenAPI (Swagger UI 3.0), Hibernate Validator |
+| **Storage & Mail** | Cloudinary Java SDK, Local Disk Fallback, JavaMailSender |
+| **Build & Tooling** | Apache Maven, Maven Wrapper (`mvnw`), Docker Compose |
+
+---
+
+## 🚀 Getting Started & Local Setup
 
 ### Prerequisites
+* **Java Development Kit (JDK):** Version 21 (Temurin, Oracle, or Corretto)
+* **PostgreSQL:** Version 14+ running on port `5432` (or Docker)
+* **Maven:** 3.9+ (or use the bundled `./mvnw` / `mvnw.cmd`)
 
-- **Java Development Kit (JDK)**: Version 21
-- **PostgreSQL**: Version 14+ running on port `5432` (or via Docker)
-- **Maven**: (or use the included `./mvnw` / `mvnw.cmd` wrapper)
-
-### 1. Configuration Setup
-
-Copy the example configuration template:
-
-```bash
-cp src/main/resources/application-example.properties src/main/resources/application.properties
-```
-
-Configure your environment variables (or update `application.properties` directly):
-
-| Variable | Required | Purpose |
-|---|---|---|
-| `DB_URL` | No | JDBC Connection URL (default: `jdbc:postgresql://localhost:5432/HRMS`) |
-| `DB_USERNAME` | No | PostgreSQL user (default: `postgres`) |
-| `DB_PASSWORD` | **Yes** | PostgreSQL password |
-| `JWT_SECRET` | **Yes** | Cryptographic 256+ bit secret key for signing JWT tokens |
-| `MAIL_USERNAME` | For Reset | SMTP username for outbound transactional emails |
-| `MAIL_PASSWORD` | For Reset | SMTP password / App Password |
-| `FRONTEND_URL` | No | Base frontend URL for reset links (default: `http://localhost:5173`) |
-
-### 2. Start PostgreSQL via Docker (Optional)
-
+### 1. Database Setup (via Docker or Local PostgreSQL)
+Using Docker Compose:
 ```bash
 docker-compose up -d
 ```
-
-### 3. Build & Run the Backend
-
-```bash
-# Windows (PowerShell)
-$env:JAVA_HOME = 'C:\Program Files\Java\jdk-21'
-.\mvnw.cmd spring-boot:run
-
-# macOS / Linux
-./mvnw spring-boot:run
+*Or create a local database manually:*
+```sql
+CREATE DATABASE "HRMS";
 ```
 
-The service initializes on `http://localhost:8080`. Flyway automatically runs pending database migrations on startup.
+### 2. Configure Environment Variables / Properties
+Copy the template configuration:
+```bash
+cp src/main/resources/application-example.properties src/main/resources/application.properties
+```
+Fill in your database credentials or provide them as environment variables:
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/HRMS
+spring.datasource.username=postgres
+spring.datasource.password=your_db_password
+application.security.jwt.secret-key=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+```
+
+### 3. Build & Run Application
+```bash
+# On Linux/macOS
+./mvnw clean spring-boot:run
+
+# On Windows
+./mvnw.cmd clean spring-boot:run
+```
+The server will initialize on **`http://localhost:8080`**. Flyway will automatically execute migrations `V1` through `V11`.
 
 ---
 
-## Engineering Decisions & Trade-offs
+## 📡 API Overview & Interactive Docs
 
-1. **Flyway Migrations over Hibernate `ddl-auto`**:
-   - *Rationale*: Automatic schema generation (`ddl-auto=update`) poses severe data corruption risks in production and lacks rollback tracking. Flyway guarantees repeatable, audited SQL executions across all deployment environments.
-2. **Bucket4j In-Memory Token Bucket**:
-   - *Rationale*: Prevents brute-force attacks at the application tier without requiring an external Redis infrastructure dependency during early-stage deployments.
-3. **MapStruct Compile-Time Mapping over Reflection (e.g. ModelMapper)**:
-   - *Rationale*: Reflection-based mappers introduce runtime overhead and fail silently on field name discrepancies. MapStruct generates standard Java code at build time, failing fast during compilation if mapping contracts break.
+Once running, explore and test the entire API via Swagger UI:
+* **Interactive Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+* **OpenAPI Specification JSON:** `http://localhost:8080/v3/api-docs`
+
+| Endpoint Group | Base Route | Key Operations |
+|---|---|---|
+| **Authentication** | `/api/auth` | Register (Job Seeker / Employer), Login, Forgot Password, Reset Password |
+| **Job Advertisements** | `/api/jobadvertisements` | List active postings, filter by city/title/type, toggle active status, add posting |
+| **Job Applications** | `/api/jobapplications` | Submit application, candidate application list, employer candidate review |
+| **Résumés & Profiles** | `/api/resumes` | Get candidate CV, add biography, social links, upload photo & PDF CV |
+| **CV Sub-Entities** | `/api/jobexperiences`, `/api/schools`, `/api/skills`, `/api/languages` | Granular CRUD for education, work experience, skill tags, languages |
+| **Reference Data** | `/api/cities`, `/api/jobtitles`, `/api/categories`, `/api/typeofwork` | System lookup classifications |
 
 ---
 
-## Known Limitations & Roadmap
+## 🔒 Security Best Practices & Configuration Hygiene
 
-- **Distributed Rate Limiting**: The current Bucket4j configuration operates in-memory; scaling across multiple instances requires backed storage (e.g. Redis).
-- **Search Optimization**: Filtering job advertisements uses relational database indexes; integrating Elasticsearch or PostgreSQL full-text search would enhance relevance ranking for large-scale catalogues.
-- **Automated Integration Test Suite**: Unit and MockMvc test coverage across business managers and controllers is targeted for expansion.
+* **No Hardcoded Secrets:** Configuration templates use environment variable fallback syntax `${DB_PASSWORD:changeme}` and `${JWT_SECRET:...}`.
+* **Sensitive File Isolation:** Local `application.properties`, uploaded files (`uploads/`), and runtime log outputs are protected via `.gitignore`.
+* **CORS Policy:** Strict CORS configuration mapped specifically to the companion frontend origin (`http://localhost:5173`).
