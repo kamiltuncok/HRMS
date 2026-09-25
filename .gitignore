@@ -45,8 +45,14 @@ src/main/resources/application.properties
 ### Uploads & runtime data ###
 uploads/
 
-### Logs ###
+### Logs & Temporary Dumps ###
 *.log
+backend_*.txt
+build_*.txt
+build_output*.txt
+build_v*.txt
+errors_*.txt
+errors_clean.txt
 
 ### OS-generated files ###
 .DS_Store
