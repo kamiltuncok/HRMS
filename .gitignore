@@ -47,6 +47,9 @@ uploads/
 
 ### Logs & Temporary Dumps ###
 *.log
+*.hprof
+hs_err_pid*
+replay_pid*
 backend_*.txt
 build_*.txt
 build_output*.txt
